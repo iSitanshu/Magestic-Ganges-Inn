@@ -21,52 +21,51 @@ const generateAccesssAndRefreshTokens = async(userId) => {
     }
 }
 
-// const registerUser = asyncHandler( async (req, res) => {
-
-//     const {email, username, password, role, department} = req.body
-//     console.log("FullName = ",username) 
-
-//     if(
-//         [email, username, password, role, department].some((field)=>
-//         field?.trim() === "")
-//     ) throw new ApiError(400, "All fields are required");
-    
-
-//     const exitedUser = await User.findOne({
-//         $or: [{ username }, { email }]
-//     })
-//     if(exitedUser) throw new ApiError(409, "User with email or username already exit")
-
-
-//     const user = await User.create({
-//         email,
-//         password,
-//         username: username.toLowerCase(),
-//         role,
-//         department
-//     })
-
-//     const createdUser = await User.findById(user._id).select(
-//         "-password -refreshToken"
-//     )
-//     if(!createdUser) throw new ApiError(500, "Something went wrong while registering the user")
-    
-//         return res.status(201).json(
-//             new ApiResponse(201, 
-//                 {
-//                     user: createdUser,
-//                 }, 
-//                 "User registered successfully"
-//             )
-//         );        
-
-// })
-
 const registerUser = asyncHandler( async (req, res) => {
-    res.status(200).json({
-        message: "ok"
+
+    const {email, username, password} = req.body
+    console.log("FullName = ",username) 
+
+    if(
+        [email, username, password].some((field)=>
+        field?.trim() === "")
+    ) throw new ApiError(400, "All fields are required");
+    
+
+    const exitedUser = await User.findOne({
+        $or: [{ username }, { email }]
     })
-} )
+    if(exitedUser) throw new ApiError(409, "User with email or username already exit")
+
+    const adminEmails = ['one@one.com'];
+    const managerEmails = ['two@two.com'];
+
+    let role = 'User';
+    if (adminEmails.includes(email)) role = 'Admin';
+    else if (managerEmails.includes(email)) role = 'Manager';
+
+
+    const user = await User.create({
+        email,
+        password,
+        username: username.toLowerCase(),
+        role
+    })
+
+    const createdUser = await User.findById(user._id).select(
+        "-password -refreshToken"
+    )
+
+    if(!createdUser) throw new ApiError(500, "Something went wrong while registering the user")
+    
+        return res.status(201).json(
+            new ApiResponse(200, 
+                createdUser, 
+                "User registered successfully"
+            )
+        );        
+
+})
 
 const loginUser = asyncHandler( async (req, res) => {
 
@@ -81,15 +80,13 @@ const loginUser = asyncHandler( async (req, res) => {
     if(!user) throw new ApiError(404, "User does not exist");
  
     const isPasswordValid = await user.isPasswordCorrect(password)
-    if(!password) throw new ApiError(404, "Invalid user credentials");
+    if(!isPasswordValid) throw new ApiError(404, "Invalid user credentials");
 
     const { accessToken, refreshToken } = await generateAccesssAndRefreshTokens(user._id)
 
  
     const loggedInUser = await User.findById(user._id).
     select("-password -refreshToken")
-
-    console.log(loggedInUser)
 
     const options = {
         httpOnly: true,

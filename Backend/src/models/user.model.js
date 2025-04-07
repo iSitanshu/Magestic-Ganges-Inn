@@ -26,11 +26,11 @@ const userSchema = new Schema(
         role: {
             type: String,
             enum: ['User','Manager','Admin'],
-            required: true
+            default: 'User',
         },
         isMember: {
             type: Boolean,
-            required: true
+            default: false
         },
         refreshToken: {
             type: String
