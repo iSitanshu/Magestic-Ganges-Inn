@@ -4,12 +4,17 @@ import 'remixicon/fonts/remixicon.css';
 import Navbar from '../components/Navbar.jsx';
 import BookRoom from '../components/BookRoom.jsx';
 import Amenities from '../components/Amenities.jsx';
+import Dinning from '../components/Dinning.jsx';
+import Offers from '../components/Offers.jsx';
+import Location from '../components/Location.jsx';
+import Member from '../components/Member.jsx';
+import Review from '../components/Review.jsx';
+import Footer from '../components/Footer.jsx';
 
 const Home = () => {
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-800 font-sans">
+    <div className="min-h-screen text-gray-800 font-sans">
       {/* Header */}
-      <div className="absolute inset-0 bg-opacity-30"></div>
       <header
         className="relative h-[90vh] bg-cover bg-center"
         style={{ backgroundImage: `url(${assets.landingpage})` }}
@@ -39,11 +44,17 @@ const Home = () => {
 
       <Amenities />
 
-      {/* Optional Footer */}
-      <footer className="mt-20 text-center text-gray-500 text-sm py-6">
-        © 2025 YourHotel. All rights reserved.
-      </footer>
+      <Dinning />
 
+      <Offers />
+
+      <Location />
+
+      <Member />
+
+      <Review />
+
+      <Footer />
 
     </div>
   );

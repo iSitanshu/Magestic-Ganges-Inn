@@ -10,7 +10,33 @@ import parking from './parking.jpg'
 import waiter from './waiter.jpg'
 import wifi from './wifi.jpg'
 import phone from './phone.jpg'
+import roomimage1 from "./RoomImg/roomimage1.jpg"
+import roomimage2 from "./RoomImg/roomimage2.jpg"
+import roomimage3 from "./RoomImg/roomimage3.jpg"
+import roomimage4 from "./RoomImg/roomimage4.jpg"
+import roomimage5 from "./RoomImg/roomimage5.jpg"
+import hallimage1 from './HallImg/hallimage1.jpg'
+import hallimage2 from './HallImg/hallimage2.jpg'
+import entryimage1 from './EntryImg/entryimage1.jpg'
+import entryimage2 from './EntryImg/entryimage2.jpg'
+import entryimage3 from './EntryImg/entryimage3.jpg'
+import roombg from "./roombg.jpg"
+import roombg2 from "./roombg2.jpg"
+import dinningbg from './dinningbg.jpg'
+import dinningbg2 from './dinningbg2.jpg'
+import hallbg from './hallbg.jpg'
+import hallbg2 from './hallbg2.jpg'
+import earlybg from './earlybg.jpg'
+import earlybg2 from './earlybg2.jpg'
+import restaurantoffer from './restaurantoffer.jpg'
+import foodoffer from './foodoffer.jpg'
+import map from './map.jpg'
 
 export const assets = {
-    logo, landingpage, ac, cctv, clear, fire, ketle, med, parking, waiter, wifi, phone
+    logo, landingpage, ac, cctv, clear, fire, ketle, med, parking, waiter, wifi, phone, map,
+    roomimage1, roomimage2, roomimage3, roomimage4, roomimage5,
+    hallimage1, hallimage2,
+    entryimage1, entryimage2, entryimage3,
+    roombg, roombg2, hallbg, hallbg2, earlybg, earlybg2, dinningbg, dinningbg2,
+    restaurantoffer, foodoffer
 }

@@ -19,46 +19,49 @@ const Amenities = () => {
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <div className="text-center py-56 bg-gradient-to-b from-white to-gray-50">
-      <h1 className="text-5xl font-extrabold text-yellow-500 mb-3 tracking-wide">
-        Majestic Ganges Inn
-      </h1>
-      <h2 className="text-2xl text-gray-600 font-medium mb-10">
-        Rooms · Boutique · Lawn · Restaurant
-      </h2>
+    <div className="relative text-center py-56 bg-cover bg-center bg-no-repeat">
+      <div className="relative z-10">
+        <div className="text-center mb-12">
+          <h1 className="text-6xl font-serif font-extrabold text-yellow-600 tracking-wide mb-4 drop-shadow-md">
+            Majestic Ganges Inn
+          </h1>
+          <h2 className="text-xl sm:text-2xl md:text-3xl text-gray-700 font-light italic tracking-wider">
+            Rooms • Boutique • Lawn • Restaurant
+          </h2>
+        </div>
 
-      {/* Amenity Icons */}
-      <div className="flex flex-wrap justify-center gap-8">
-        {amenitiesList.map((item, index) => (
-          <div
-            key={index}
-            className="w-15 h-20 relative group cursor-pointer transition-all hover:scale-110"
-          >
-            <img
-              src={item.icon}
-              alt={item.name}
-              className="w-full h-full object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-300"
-            />
-            <span className="absolute bottom-[-1.75rem] left-1/2 transform -translate-x-1/2 text-sm text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              {item.name}
-            </span>
-          </div>
-        ))}
+        {/* Amenity Icons */}
+        <div className="flex flex-wrap justify-center gap-14">
+          {amenitiesList.map((item, index) => (
+            <div
+              key={index}
+              className="w-15 h-20 relative group cursor-pointer transition-all hover:scale-110"
+            >
+              <img
+                src={item.icon}
+                alt={item.name}
+                className="w-full h-full object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-300"
+              />
+              <span className="absolute bottom-[-1.75rem] left-1/2 transform -translate-x-1/2 text-sm text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                {item.name}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* View All Button */}
+        <button
+          onClick={() => setShowModal(true)}
+          className="mt-10 px-8 py-3 bg-black hover:bg-yellow-500 text-white font-semibold rounded-full shadow-lg transition-all duration-200 flex items-center justify-center gap-2 mx-auto"
+        >
+          View All Amenities <i className="ri-arrow-right-wide-line text-lg"></i>
+        </button>
       </div>
-
-      {/* View All Button */}
-      <button
-        onClick={() => setShowModal(true)}
-        className="mt-10 px-8 py-3 bg-black hover:bg-yellow-500 text-white font-semibold rounded-full shadow-lg transition-all duration-200 flex items-center justify-center gap-2 mx-auto"
-      >
-        View All Amenities <i className="ri-arrow-right-wide-line text-lg"></i>
-      </button>
 
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 px-4">
           <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto relative">
-            {/* Close */}
             <button
               onClick={() => setShowModal(false)}
               className="absolute top-4 right-5 text-3xl text-gray-500 hover:text-red-500"
@@ -86,7 +89,7 @@ const Amenities = () => {
           </div>
         </div>
       )}
-    </div>
+    </div> // ← this closing div was missing
   );
 };
 
