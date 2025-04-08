@@ -1,12 +1,56 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { assets } from '../assets/assets.js';
+import { UserContext } from '../context/User/UserContext.js';
 
 const LoginPopup = ({ setShowLogin }) => {
+  const { setUser, user } = useContext(UserContext);
   const [currState, setCurrState] = useState('Sign Up');
+  const [userregister, setUserRegister] = useState({
+    username: '',
+    email: '',
+    password: ''
+  });
+
+  const handleChange = (e) => {
+    setUserRegister({ ...userregister, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const url =
+        currState === 'Sign Up'
+          ? 'http://localhost:8000/api/v1/users/register'
+          : 'http://localhost:8000/api/v1/users/login';
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userregister),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.data); // Save user to context
+        setShowLogin(false); // Close the login popup
+        console.log(user)
+      } else if (response.status === 409) {
+        alert('User already exists!');
+      } else {
+        const errorData = await response.json();
+        console.error(`${currState} failed:`, errorData);
+      }
+    } catch (error) {
+      console.error('Fetch failed:', error);
+    }
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-200 bg-opacity-60 z-50">
-      <form className="bg-white w-[90%] sm:w-[400px] p-6 rounded-2xl shadow-xl relative">
+      <form
+        className="bg-white w-[90%] sm:w-[400px] p-6 rounded-2xl shadow-xl relative"
+        onSubmit={handleSubmit}
+      >
         {/* Title and Close */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold text-gray-800">{currState}</h2>
@@ -20,23 +64,29 @@ const LoginPopup = ({ setShowLogin }) => {
 
         {/* Inputs */}
         <div className="flex flex-col gap-4 mb-4">
-          {currState === 'Login' ? null : (
+          {currState === 'Sign Up' && (
             <input
               type="text"
+              name="username"
               placeholder="Your name"
+              onChange={handleChange}
               required
               className="border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           )}
           <input
             type="email"
+            name="email"
             placeholder="Your Email"
+            onChange={handleChange}
             required
             className="border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <input
             type="password"
+            name="password"
             placeholder="Enter the Password"
+            onChange={handleChange}
             required
             className="border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />

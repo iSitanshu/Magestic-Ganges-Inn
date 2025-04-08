@@ -379,6 +379,7 @@ const RoomBooking = () => {
               className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
             />
           </div>
+          <span className="text-red-500">*Make sure login/signup before making payment</span>
           <button className="mt-6 w-full bg-green-600 text-white py-3 px-6 rounded-xl font-semibold text-lg hover:bg-green-700 transition cursor-pointer">
             Make Payment
           </button>
