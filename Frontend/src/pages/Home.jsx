@@ -10,8 +10,14 @@ import Location from '../components/Location.jsx';
 import Member from '../components/Member.jsx';
 import Review from '../components/Review.jsx';
 import Footer from '../components/Footer.jsx';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+  const navigate = useNavigate()
+  const changepage = () => {
+    navigate('/RoomBooking')
+  }
+
   return (
     <div className="min-h-screen text-gray-800 font-sans">
       {/* Header */}
@@ -30,8 +36,8 @@ const Home = () => {
               Book your dream vacation with us. Relax, unwind, and indulge in unmatched comfort and elegance.
             </p>
             <a
-              href="#booking"
-              className="bg-yellow-500 hover:bg-yellow-600 text-gray-900 px-6 py-3 rounded-full font-semibold transition"
+              className="bg-yellow-500 hover:bg-yellow-600 cursor-pointer text-gray-900 px-6 py-3 rounded-full font-semibold transition"
+              onClick={()=>changepage()}
             >
               Book Now
             </a>

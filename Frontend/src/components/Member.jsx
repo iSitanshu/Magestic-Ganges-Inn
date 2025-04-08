@@ -2,17 +2,15 @@ import React, { useState } from 'react';
 
 const Member = () => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    userName: '',
     email: '',
-    confirmEmail: '',
     password: '',
-    confirmPassword: '',
     payment: ''
   });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    console.log(formData)
   };
 
   const handleSubmit = (e) => {

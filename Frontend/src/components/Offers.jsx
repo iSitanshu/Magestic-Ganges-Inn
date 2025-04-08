@@ -28,9 +28,9 @@ const Offers = () => {
 
   const handleBooking = (type) => {
     if (type === 'hotel') {
-      navigate('/hotel-booking');
+      navigate('/RoomBooking');
     } else if (type === 'restaurant') {
-      navigate('/restaurant-booking');
+      navigate('/RestaurantBooking');
     }
   };
 
