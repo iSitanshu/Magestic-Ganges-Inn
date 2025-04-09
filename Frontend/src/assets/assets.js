@@ -31,6 +31,7 @@ import earlybg2 from './earlybg2.jpg'
 import restaurantoffer from './restaurantoffer.jpg'
 import foodoffer from './foodoffer.jpg'
 import map from './map.jpg'
+import profilebg from './profilebg.jpeg'
 
 export const assets = {
     logo, landingpage, ac, cctv, clear, fire, ketle, med, parking, waiter, wifi, phone, map,
@@ -38,5 +39,5 @@ export const assets = {
     hallimage1, hallimage2,
     entryimage1, entryimage2, entryimage3,
     roombg, roombg2, hallbg, hallbg2, earlybg, earlybg2, dinningbg, dinningbg2,
-    restaurantoffer, foodoffer
+    restaurantoffer, foodoffer, profilebg
 }

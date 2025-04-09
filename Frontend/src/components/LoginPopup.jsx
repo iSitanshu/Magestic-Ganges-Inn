@@ -1,9 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { assets } from '../assets/assets.js';
-import { UserContext } from '../context/User/UserContext.js';
+import UserContext from '../context/User/UserContext.js';
+import PopupContext from '../context/Popup/PopupContext.js';
 
-const LoginPopup = ({ setShowLogin }) => {
-  const { setUser, user } = useContext(UserContext);
+const LoginPopup = () => {
+  const { setShowLogin } = useContext(PopupContext)
+  const { setUser } = useContext(UserContext);
   const [currState, setCurrState] = useState('Sign Up');
   const [userregister, setUserRegister] = useState({
     username: '',
@@ -17,6 +19,7 @@ const LoginPopup = ({ setShowLogin }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       const url =
         currState === 'Sign Up'
@@ -31,9 +34,8 @@ const LoginPopup = ({ setShowLogin }) => {
 
       if (response.ok) {
         const data = await response.json();
-        setUser(data.data); // Save user to context
-        setShowLogin(false); // Close the login popup
-        console.log(user)
+        setUser(data.data); 
+        setShowLogin(false);
       } else if (response.status === 409) {
         alert('User already exists!');
       } else {

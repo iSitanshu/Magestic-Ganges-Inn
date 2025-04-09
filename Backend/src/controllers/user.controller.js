@@ -70,6 +70,7 @@ const registerUser = asyncHandler( async (req, res) => {
 const loginUser = asyncHandler( async (req, res) => {
 
     const {email, username, password} = req.body
+    console.log(`Email is : ${email}`)
 
     if(!username && !email) throw new ApiError(400, "Username or Email is required");
 
@@ -110,7 +111,6 @@ const loginUser = asyncHandler( async (req, res) => {
 })
 
 const logoutUser = asyncHandler( async (req, res) => {
-    // remove all cookies
     await User.findByIdAndUpdate(
         req.user._id,
         {

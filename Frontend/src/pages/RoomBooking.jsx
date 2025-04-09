@@ -1,19 +1,22 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { assets } from "../assets/assets.js";
 import LoginPopup from "../components/LoginPopup.jsx";
 import { useNavigate } from 'react-router-dom'
 import Footer from '../components/Footer.jsx'
+import UserContext from "../context/User/UserContext.js";
 
-const RoomBooking = () => {
-  const [showLogin, setShowLogin] = useState(false);
+const RoomBooking = ( {setShowLogin, showLogin} ) => {
   const [step, setStep] = useState(1); // Booking steps
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [arrivalDate, setArrivalDate] = useState("");
   const [departureDate, setDepartureDate] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false)
   const [luggageDays, setLuggageDays] = useState(0);
   const [numRooms, setNumRooms] = useState(1);
   const [numAdults, setNumAdults] = useState(2);
   const [promoCode, setPromoCode] = useState("");
+
+  const { user } = useContext(UserContext)
 
   const navigate = useNavigate()
 
@@ -137,12 +140,40 @@ const RoomBooking = () => {
           <li onClick={() => toHall()} className="hover:text-blue-600 cursor-pointer">Hall</li>
           <li onClick={() => toHome()} className="hover:text-blue-600 cursor-pointer">Location</li>
         </ul>
-        <button
-          onClick={() => setShowLogin(true)}
-          className="bg-yellow-500 hover:bg-black text-white font-semibold py-2 px-4 rounded-lg"
-        >
-          Login / Signup
-        </button>
+        {/* Show login/signup button when no user is logged in */}
+        {!user && (
+            <button
+              onClick={() => setShowLogin(true)}
+              className="bg-yellow-500 hover:bg-black text-white font-semibold py-2 px-4 rounded-lg"
+            >
+              Login / Signup
+            </button>
+          )}
+          {/* Show user dropdown when logged in */}
+          {user && (
+            <div className="relative">
+              <i
+                className="text-black ri-user-fill text-3xl cursor-pointer"
+                onClick={() => setShowDropdown((prev) => !prev)}
+              ></i>
+              {showDropdown && (
+                <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-md text-black">
+                  <button
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-200"
+                    onClick={() => (window.location.href = '/UserDetails')}
+                  >
+                    Profile
+                  </button>
+                  <button
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-200"
+                    onClick={() => logoutUser()}
+                    >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
       </nav>
 
       {/* Step 1: Booking Form */}

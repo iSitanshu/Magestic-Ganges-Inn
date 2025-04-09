@@ -48,15 +48,24 @@ const Home = () => {
       {/* Booking Form */}
       <BookRoom />
 
+
       <Amenities />
 
-      <Dinning />
+      <div id="roomsection">
+        <Dinning />
+      </div>
 
-      <Offers />
+      <div id="offersSection">
+        <Offers />
+      </div>
 
-      <Location />
+      <div id="locationsection">
+        <Location />
+      </div>
 
-      <Member />
+      <div id="membersection">
+        <Member />
+      </div>
 
       <Review />
 
