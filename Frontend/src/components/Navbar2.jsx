@@ -1,14 +1,15 @@
 import React, { useContext, useState } from 'react';
 import { assets } from '../assets/assets.js';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
 import UserContext from '../context/User/UserContext.js';
 import LoginPopup from './LoginPopup';
 import PopupContext from '../context/Popup/PopupContext.js';
 
-const Navbar = () => {
+const Navbar2 = () => {
   const { user, setUser } = useContext(UserContext);
   const { showLogin, setShowLogin } = useContext(PopupContext);
   const [showDropdown, setShowDropdown] = useState(false);
+  const navigate = useNavigate();
 
   const logoutUser = async () => {
     try {
@@ -28,22 +29,33 @@ const Navbar = () => {
     }
   };
 
+  // Helper to navigate and scroll after redirect
+  const navigateAndScroll = (path, hash) => {
+    navigate(path);
+    setTimeout(() => {
+      const element = document.querySelector(hash);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 300);
+  };
+
   return (
     <>
       {showLogin && <LoginPopup />}
       <nav className="flex justify-between items-center px-6 py-4 bg-white shadow-md">
         <div className="flex items-center gap-4">
           <Link to="/">
-            <img src={assets.logo} alt="Logo" className="h-15 hover: cursor-pointer" />
+            <img src={assets.logo} alt="Logo" className="h-20 hover: cursor-pointer" />
           </Link>
         </div>
         <div className="flex items-center gap-4">
-        <a
+          <a
             href="#membersection"
             className="text-gray-800 font-medium hover:text-yellow-500 transition"
             onClick={(e) => {
               e.preventDefault();
-              document.querySelector('#membersection').scrollIntoView({ behavior: 'smooth' });
+              document.querySelector('#membersection')?.scrollIntoView({ behavior: 'smooth' });
             }}
           >
             Join
@@ -85,71 +97,43 @@ const Navbar = () => {
           )}
         </div>
       </nav>
-      
+
+      {/* Bottom Nav Section */}
       <ul className="flex justify-center space-x-6 py-4 bg-gray-100">
         <li>
-          <a
-            href="#homesection"
-            className="text-gray-800 hover:text-yellow-500 transition"
-            onClick={(e) => {
-              e.preventDefault();
-              document.querySelector('#hoomesection').scrollIntoView({ behavior: 'smooth' });
-            }}
-          >
-            Home
-          </a>
-        </li>
-        <li>
-          <a
-            href="#roomsection"
-            className="text-gray-800 hover:text-yellow-500 transition"
-            onClick={(e) => {
-              e.preventDefault();
-              document.querySelector('#roomsection').scrollIntoView({ behavior: 'smooth' });
-            }}
-          >
+          <NavLink to="/RoomBooking" className="text-gray-800 hover:text-yellow-500 transition">
             Room
-          </a>
+          </NavLink>
         </li>
         <li>
-          <a
-            href="#offersSection"
+          <button
+            onClick={() => navigateAndScroll('/', '#offersSection')}
             className="text-gray-800 hover:text-yellow-500 transition"
-            onClick={(e) => {
-              e.preventDefault();
-              document.querySelector('#offersSection').scrollIntoView({ behavior: 'smooth' });
-            }}
           >
             Offers
-          </a>
+          </button>
         </li>
         <li>
-        <a
-            href="#offersSection"
-            className="text-gray-800 hover:text-yellow-500 transition"
-            onClick={(e) => {
-              e.preventDefault();
-              document.querySelector('#roomsection').scrollIntoView({ behavior: 'smooth' });
-            }}
-          >
+          <NavLink to="/RestaurantBooking" className="text-gray-800 hover:text-yellow-500 transition">
             Dinning
-          </a>
+          </NavLink>
         </li>
         <li>
-        <a
-            href="#locationsection"
+          <button
+            onClick={() => navigateAndScroll('/', '#locationsection')}
             className="text-gray-800 hover:text-yellow-500 transition"
-            onClick={(e) => {
-              e.preventDefault();
-              document.querySelector('#locationsection').scrollIntoView({ behavior: 'smooth' });
-            }}
           >
             Location
-          </a>
+          </button>
+        </li>
+        <li>
+          <NavLink to="/Gallery" className="text-gray-800 hover:text-yellow-500 transition">
+            Gallery
+          </NavLink>
         </li>
       </ul>
     </>
   );
 };
 
-export default Navbar;
+export default Navbar2;

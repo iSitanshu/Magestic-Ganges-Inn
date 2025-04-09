@@ -4,8 +4,9 @@ import LoginPopup from "../components/LoginPopup.jsx";
 import { useNavigate } from 'react-router-dom'
 import Footer from '../components/Footer.jsx'
 import UserContext from "../context/User/UserContext.js";
+import PopupContext from "../context/Popup/PopupContext.js";
 
-const RoomBooking = ( {setShowLogin, showLogin} ) => {
+const RoomBooking = () => {
   const [step, setStep] = useState(1); // Booking steps
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [arrivalDate, setArrivalDate] = useState("");
@@ -15,6 +16,7 @@ const RoomBooking = ( {setShowLogin, showLogin} ) => {
   const [numRooms, setNumRooms] = useState(1);
   const [numAdults, setNumAdults] = useState(2);
   const [promoCode, setPromoCode] = useState("");
+  const { showLogin, setShowLogin } = useContext(PopupContext)
 
   const { user } = useContext(UserContext)
 
@@ -144,39 +146,39 @@ const RoomBooking = ( {setShowLogin, showLogin} ) => {
         {!user && (
             <button
               onClick={() => setShowLogin(true)}
-              className="bg-yellow-500 hover:bg-black text-white font-semibold py-2 px-4 rounded-lg"
+              className="bg-yellow-500 pointer-cursor hover:bg-black text-white font-semibold py-2 px-4 rounded-lg"
             >
               Login / Signup
             </button>
           )}
-          {/* Show user dropdown when logged in */}
-          {user && (
-            <div className="relative">
-              <i
-                className="text-black ri-user-fill text-3xl cursor-pointer"
-                onClick={() => setShowDropdown((prev) => !prev)}
-              ></i>
-              {showDropdown && (
-                <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-md text-black">
-                  <button
+          {/* /* Show user dropdown when logged in */} 
+                {user && (
+                <div className="relative">
+                  <i
+                  className="text-black ri-user-fill text-3xl cursor-pointer"
+                  onClick={() => setShowDropdown((prev) => !prev)}
+                  ></i>
+                  {showDropdown && (
+                  <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-md text-black">
+                    <button
                     className="block w-full text-left px-4 py-2 hover:bg-gray-200"
-                    onClick={() => (window.location.href = '/UserDetails')}
-                  >
+                    onClick={() => navigate('/UserDetails')}
+                    >
                     Profile
-                  </button>
-                  <button
+                    </button>
+                    <button
                     className="block w-full text-left px-4 py-2 hover:bg-gray-200"
                     onClick={() => logoutUser()}
                     >
                     Logout
-                  </button>
+                    </button>
+                  </div>
+                  )}
                 </div>
-              )}
-            </div>
-          )}
-      </nav>
+                )}
+              </nav>
 
-      {/* Step 1: Booking Form */}
+              {/* Step 1: Booking Form */}
       {step === 1 && (
         <section className="mt-24 min-h-screen flex items-center justify-center p-6 bg-gray-50">
           <div className="bg-white p-8 rounded-2xl shadow-xl max-w-2xl w-full space-y-6">

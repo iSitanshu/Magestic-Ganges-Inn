@@ -32,12 +32,24 @@ import restaurantoffer from './restaurantoffer.jpg'
 import foodoffer from './foodoffer.jpg'
 import map from './map.jpg'
 import profilebg from './profilebg.jpeg'
+import yellowbg from './yellowbg.jpg'
+import buffet from './buffet.jpg'
+import credit from './credit.jpg'
+import reservation from './reservation.jpg'
+import seat from './seat.jpg'
+import takeout from './takeout.jpg'
+import upi from './upi.jpg'
+import menu1 from '../assets/Menu/menu1.jpg'
+import menu2 from '../assets/Menu/menu2.jpg'
+import menu3 from '../assets/Menu/menu3.jpg'
 
 export const assets = {
     logo, landingpage, ac, cctv, clear, fire, ketle, med, parking, waiter, wifi, phone, map,
     roomimage1, roomimage2, roomimage3, roomimage4, roomimage5,
     hallimage1, hallimage2,
     entryimage1, entryimage2, entryimage3,
+    menu1, menu2, menu3,
     roombg, roombg2, hallbg, hallbg2, earlybg, earlybg2, dinningbg, dinningbg2,
-    restaurantoffer, foodoffer, profilebg
+    restaurantoffer, foodoffer, profilebg, yellowbg,
+    buffet, credit, reservation, seat, takeout, upi
 }

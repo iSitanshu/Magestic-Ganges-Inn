@@ -21,7 +21,7 @@ const Home = () => {
   return (
     <div className="min-h-screen text-gray-800 font-sans">
       {/* Header */}
-      <header
+      <header id='homesection'
         className="relative h-[90vh] bg-cover bg-center"
         style={{ backgroundImage: `url(${assets.landingpage})` }}
       >
