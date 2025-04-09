@@ -35,9 +35,18 @@ const userSchema = new Schema(
         refreshToken: {
             type: String
         },
-        booking: {
-
-        }
+        // roombooking: {
+        //     type: Schema.Types.ObjectId,
+        //     ref: 'RoomBooking'
+        // },
+        // restaurantbooking: {
+        //     type: Schema.Types.ObjectId,
+        //     ref: 'RestaurantBooking'
+        // },
+        // hallbooking: {
+        //     type: Schema.Types.ObjectId,
+        //     ref: 'HallBooking'
+        // }
     },
     {timestamps: true})
 

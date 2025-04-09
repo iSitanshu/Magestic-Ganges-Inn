@@ -24,7 +24,6 @@ const generateAccesssAndRefreshTokens = async(userId) => {
 const registerUser = asyncHandler( async (req, res) => {
 
     const {email, username, password} = req.body
-    console.log("FullName = ",username) 
 
     if(
         [email, username, password].some((field)=>
@@ -70,7 +69,6 @@ const registerUser = asyncHandler( async (req, res) => {
 const loginUser = asyncHandler( async (req, res) => {
 
     const {email, username, password} = req.body
-    console.log(`Email is : ${email}`)
 
     if(!username && !email) throw new ApiError(400, "Username or Email is required");
 
@@ -241,4 +239,30 @@ const updateAccountDetails = asyncHandler(async(req, res) => {
     .json(new ApiResponse(200, user, "Account details updated successfully"))
 });
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails }
+const checkmember = asyncHandler(async(req, res) => {
+    const {email, username, password} = req.body
+    
+    if(!username && !email) throw new ApiError(400, "Username or Email is required");
+    
+    const check = await User.findOne({
+        $or: [{username}, {email}]
+    })
+    if(!check) throw new ApiError(404, "User does not exist");
+    if(check.isMember == true) throw new ApiError(404, "You are already our Member")
+    
+    const user = User.findByIdAndUpdate(req.user?._id,
+        req.user?._id,
+        {
+            $set: {
+                isMember: true
+            }
+        },
+        {new: true}
+    ).select("-password")
+    
+    return res
+    .status(200)
+    .json(new ApiResponse(200, check.user , "You are a member"))
+});
+
+export { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, checkmember }
