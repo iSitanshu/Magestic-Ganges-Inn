@@ -112,18 +112,6 @@ const Navbar = () => {
           </a>
         </li>
         <li>
-          <a
-            href="#offersSection"
-            className="text-gray-800 hover:text-yellow-500 transition"
-            onClick={(e) => {
-              e.preventDefault();
-              document.querySelector('#offersSection').scrollIntoView({ behavior: 'smooth' });
-            }}
-          >
-            Offers
-          </a>
-        </li>
-        <li>
         <a
             href="#offersSection"
             className="text-gray-800 hover:text-yellow-500 transition"
@@ -133,6 +121,30 @@ const Navbar = () => {
             }}
           >
             Dinning
+          </a>
+        </li>
+        <li>
+          <a
+            href="#offersSection"
+            className="text-gray-800 hover:text-yellow-500 transition"
+            onClick={(e) => {
+              e.preventDefault();
+              document.querySelector('#roomsection').scrollIntoView({ behavior: 'smooth' });
+            }}
+          >
+            Hall
+          </a>
+        </li>
+        <li>
+          <a
+            href="#offersSection"
+            className="text-gray-800 hover:text-yellow-500 transition"
+            onClick={(e) => {
+              e.preventDefault();
+              document.querySelector('#offersSection').scrollIntoView({ behavior: 'smooth' });
+            }}
+          >
+            Offers
           </a>
         </li>
         <li>

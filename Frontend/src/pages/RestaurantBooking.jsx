@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Navbar2 from "../components/Navbar2";
 import Footer from "../components/Footer";
 import Offers from "../components/Offers";
 import Review2 from "../components/Review2";
 import { assets } from "../assets/assets";
 import { NavLink } from "react-router-dom";
+import UserContext from "../context/User/UserContext";
 
 const amenitiesList = [
   { name: "Buffet", icon: assets.buffet },

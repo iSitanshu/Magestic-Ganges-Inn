@@ -106,17 +106,17 @@ const Navbar2 = () => {
           </NavLink>
         </li>
         <li>
+          <NavLink to="/RestaurantBooking" className="text-gray-800 hover:text-yellow-500 transition">
+            Dinning
+          </NavLink>
+        </li>
+        <li>
           <button
             onClick={() => navigateAndScroll('/', '#offersSection')}
             className="text-gray-800 hover:text-yellow-500 transition"
           >
             Offers
           </button>
-        </li>
-        <li>
-          <NavLink to="/RestaurantBooking" className="text-gray-800 hover:text-yellow-500 transition">
-            Dinning
-          </NavLink>
         </li>
         <li>
           <button
