@@ -4,8 +4,11 @@ import Navbar2 from '../components/Navbar2';
 import Footer from '../components/Footer';
 import { NavLink } from 'react-router-dom';
 import UserContext from '../context/User/UserContext';
+import PopupContext from '../context/Popup/PopupContext';
+import ReservationSummary from './ReservationSummary';
 
 const TableBooking = () => {
+  const { showLogin, setShowLogin } = useContext(PopupContext)
   const { user } = useContext(UserContext)
   const [guestCount, setGuestCount] = useState(1);
   const [selectedDate, setSelectedDate] = useState(new Date().toDateString());
@@ -33,7 +36,6 @@ const TableBooking = () => {
   ];
 
   const no_of_tables = Math.floor(guestCount / 5) + 1;
- console.log(user.user);
  
 
   return (
@@ -152,31 +154,12 @@ const TableBooking = () => {
             </div>
           </>
         ) : (
-          <section className="mt-24 p-6 max-w-4xl mx-auto space-y-8 bg-white rounded-2xl shadow-xl border border-gray-200">
-            <h2 className="text-3xl font-bold text-gray-800">Reservation Summary</h2>
-            <div className="grid md:grid-cols-2 gap-6 text-sm text-gray-700 bg-gray-50 p-6 rounded-lg border border-gray-100 shadow-sm">
-              <div className="flex justify-between">
-                <span className="font-medium">Name:</span>
-                <span className="font-semibold">{user.user.username}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">Email:</span>
-                <span className="font-semibold">{user.user.email}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">No of Guests:</span>
-                <span className="font-semibold">{guestCount}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">Date:</span>
-                <span className="font-semibold">{selectedDate}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">Time:</span>
-                <span className="font-semibold">{selectedTime}</span>
-              </div>
-            </div>
-          </section>
+          <ReservationSummary
+            guestCount={guestCount}
+            selectedDate={selectedDate}
+            selectedTime={selectedTime}
+          />
+
         )}
       </div>
       <Footer />
