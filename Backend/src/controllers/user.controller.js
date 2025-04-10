@@ -10,7 +10,6 @@ const generateAccesssAndRefreshTokens = async(userId) => {
         const accessToken = user.generateAccessToken()
         const refreshToken = user.generateRefreshToken()
 
-
         user.refreshToken = refreshToken
         await user.save({ validateBeforeSave: false })
 
@@ -34,6 +33,7 @@ const registerUser = asyncHandler( async (req, res) => {
     const exitedUser = await User.findOne({
         $or: [{ username }, { email }]
     })
+    
     if(exitedUser) throw new ApiError(409, "User with email or username already exit")
 
     const adminEmails = ['one@one.com'];

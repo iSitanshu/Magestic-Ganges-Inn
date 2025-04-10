@@ -2,34 +2,27 @@ import mongoose, { Schema } from 'mongoose';
 
 const roomSchema = new Schema(
   {
-    roomNumber: {
-      type: Number,
-      required: true,
-      unique: true
-    },
-    roomType: {
+    room_no: {
       type: String,
-      enum: ['Single', 'Double', 'Deluxe', 'Suite'],
+      required: true
+    },
+    seat: {
+      type: Number,
+      reuired: true
+    },
+    balcony: {
+      type: Boolean,
       required: true
     },
     pricePerNight: {
-      type: Number,
+      type: String,
       required: true
     },
     isAvailable: {
       type: Boolean,
       default: true
-    },
-    amenities: {
-      type: [String],
-      default: []
-    },
-    offers: {
-      type: [String],
-      default: []
     }
-  },
-  { timestamps: true }
+  }
 );
 
 export const Room = mongoose.model('Room', roomSchema);
