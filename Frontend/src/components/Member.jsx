@@ -1,20 +1,41 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import UserContext from '../context/User/UserContext';
 
 const Member = () => {
+  const { setUser } = useContext(UserContext)
   const [formData, setFormData] = useState({
-    userName: '',
+    username: '',
     email: '',
     password: '',
-    payment: ''
   });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert('Membership Form Submitted!');
+    
+    try{
+      const response = await fetch('http://localhost:8000/api/v1/users/ismember',{
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      if(response.ok) {
+        const data = await response.json();
+        setUser(data)
+        alert('You are now the Member')
+      }else if(response.status === 409) {
+        alert('Already a Member')
+      }else {
+        const errorData = await response.json();
+        alert('login')
+      }
+    } catch (error) {
+      alert('Please Login before being a member')
+    }
   };
 
   return (
@@ -27,7 +48,7 @@ const Member = () => {
         <div className="grid md:grid-cols-2 gap-4">
           <input
             type="text"
-            name="userName"
+            name="username"
             placeholder="Enter your username"
             className="border p-2 rounded"
             onChange={handleChange}

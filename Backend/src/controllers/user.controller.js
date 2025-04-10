@@ -239,30 +239,36 @@ const updateAccountDetails = asyncHandler(async(req, res) => {
     .json(new ApiResponse(200, user, "Account details updated successfully"))
 });
 
-const checkmember = asyncHandler(async(req, res) => {
-    const {email, username, password} = req.body
-    
-    if(!username && !email) throw new ApiError(400, "Username or Email is required");
-    
-    const check = await User.findOne({
-        $or: [{username}, {email}]
-    })
-    if(!check) throw new ApiError(404, "User does not exist");
-    if(check.isMember == true) throw new ApiError(404, "You are already our Member")
-    
-    const user = User.findByIdAndUpdate(req.user?._id,
-        req.user?._id,
-        {
-            $set: {
-                isMember: true
-            }
-        },
-        {new: true}
-    ).select("-password")
-    
-    return res
-    .status(200)
-    .json(new ApiResponse(200, check.user , "You are a member"))
-});
+const checkmember = asyncHandler(async (req, res) => {
+    const { email, username } = req.body;
+  
+    if (!username && !email) {
+      throw new ApiError(400, "Username or Email is required");
+    }
+  
+    const existingUser = await User.findOne({
+      $or: [{ username }, { email }]
+    });
+  
+    if (!existingUser) {
+      throw new ApiError(404, "User not found");
+    }
+  
+    if (existingUser.isMember) {
+      // Use 409 Conflict for already-existing membership
+      throw new ApiError(409, "You are already a member");
+    }
+  
+    const updatedUser = await User.findByIdAndUpdate(
+      existingUser._id,
+      { $set: { isMember: true } },
+      { new: true }
+    ).select("-password");
+  
+    return res.status(200).json(
+      new ApiResponse(200, updatedUser, "You are now a member")
+    );
+  });
+  
 
 export { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, checkmember }
