@@ -5,7 +5,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer.jsx";
 import UserContext from "../context/User/UserContext.js";
 import PopupContext from "../context/Popup/PopupContext.js";
-import Navbar2 from '../components/Navbar2.jsx'
+import Navbar2 from "../components/Navbar2.jsx";
 
 const RoomBooking = () => {
   const [step, setStep] = useState(1); // Booking steps
@@ -18,14 +18,14 @@ const RoomBooking = () => {
   const [numAdults, setNumAdults] = useState(2);
   const [promoCode, setPromoCode] = useState("");
   const { showLogin, setShowLogin } = useContext(PopupContext);
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const [showRoomAvailability, setShowRoomAvailability] = useState(false);
-  const [currentRoom, setCurrentRoom] = useState(null);
+  const [roomnumber, setRoomNumber] = useState(null);
 
   const [verifyUser, setVerifyUser] = useState({
     email: "",
     password: "",
-    phoneno: ""
+    phoneno: "",
   });
 
   // Update the handleverifyuser function
@@ -41,28 +41,35 @@ const RoomBooking = () => {
     count4: 0,
   });
 
+  // Added currentRoom state to fix undefined error
+  const [currentRoom, setCurrentRoom] = useState(null);
+
   const dataincurrentRoom = async (index) => {
-    try{
+    try {
       const urls = [
         "http://localhost:8000/api/v1/rooms/availableparticularroom?seat=3&balcony=true",
         "http://localhost:8000/api/v1/rooms/availableparticularroom?seat=3&balcony=false",
         "http://localhost:8000/api/v1/rooms/availableparticularroom?seat=2&balcony=true",
-        "http://localhost:8000/api/v1/rooms/availableparticularroom?seat=2&balcony=false"
+        "http://localhost:8000/api/v1/rooms/availableparticularroom?seat=2&balcony=false",
       ];
 
       const response = await fetch(urls[index], {
-        method: 'GET',
-      })
+        method: "GET",
+      });
 
-      if(response.ok) {
+      if (response.ok) {
         const data = await response.json();
-        setCurrentRoom(data.data.rooms[0])
-      }else {
+        setCurrentRoom(data.data.rooms[0]);
+        setBookingDetails({
+          ...bookingDetails,
+          roomId: data.data.rooms[0].room_no, // Updated to use roomnumber from currentRoom
+        });
+      } else {
         const errorData = await response.json();
-        console.error(`${currState} failed:`, errorData);
+        console.error("Room request failed:", errorData);
       }
     } catch (error) {
-      console.error('Fetch failed:', error);
+      console.error("Fetch failed:", error);
     }
   };
 
@@ -70,21 +77,17 @@ const RoomBooking = () => {
     roomId: "",
     fromDate: "",
     toDate: "",
-    guest: ""
-  })
-
-  const [roomForm, setRoomForm] = useState({
-    roomType: "",
-    guests: 1,
-    luggage: false,
-  }); 
+    guest: "",
+    totalPrice: "",
+  });
 
   const handleRequestRoom = () => {
     setShowRoomAvailability(true);
     setBookingDetails({
       ...bookingDetails,
       fromDate: arrivalDate,
-      toDate: departureDate
+      toDate: departureDate,
+      guest: numAdults,
     });
   };
 
@@ -94,7 +97,7 @@ const RoomBooking = () => {
         "http://localhost:8000/api/v1/rooms/available?seat=3&balcony=true",
         "http://localhost:8000/api/v1/rooms/available?seat=3&balcony=false",
         "http://localhost:8000/api/v1/rooms/available?seat=2&balcony=true",
-        "http://localhost:8000/api/v1/rooms/available?seat=2&balcony=false", // fixed typo "fals"
+        "http://localhost:8000/api/v1/rooms/available?seat=2&balcony=false",
       ];
 
       const responses = await Promise.all(urls.map((url) => fetch(url)));
@@ -111,7 +114,6 @@ const RoomBooking = () => {
       };
 
       setRoomStatus(newCounts);
-      console.log(newCounts);
     } catch (error) {
       console.error("Fetch failed:", error);
     }
@@ -230,14 +232,49 @@ const RoomBooking = () => {
   const luggageCharge = luggageDays * 10;
   const totalCost = roomPrice + tax + luggageCharge;
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
     if (!user) {
       setShowLogin(true);
+      console.log(bookingDetails);
     } else {
-      console.log(verifyUser)
-      ///update in Room booking DB
-
+      await verification();
+      await insertinroombooking()
       navigate("/UserDetails");
+    }
+  };
+
+  const insertinroombooking = async (req, res) => {
+    
+  }
+
+  const verification = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/v1/rooms/verifyuser",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(verifyUser),
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.data);
+        
+        setBookingDetails((prev) => {
+          const updated = { ...prev, totalPrice: totalCost };
+          console.log("Updated bookingDetails:", updated);
+          return updated;
+        });
+      } else if (response.status === 404) {
+        alert(`Invalid User Credentials`);
+      } else {
+        const errorData = await response.json();
+        console.error("Verification failed:", errorData);
+      }
+    } catch (error) {
+      console.error("Fetch failed:", error);
     }
   };
 
@@ -277,7 +314,7 @@ const RoomBooking = () => {
                     type="date"
                     value={departureDate}
                     onChange={(e) => setDepartureDate(e.target.value)}
-                    min={arrivalDate || todayStr} // disable dates before arrival date or today if not set
+                    min={arrivalDate || todayStr}
                     className="w-full border p-2 rounded"
                   />
                 </div>
@@ -425,7 +462,7 @@ const RoomBooking = () => {
         </>
       )}
 
-      {/* Step 3: Select Room  */}
+      {/* Step 3: Booking Summary */}
       {step === 2 && selectedRoom && (
         <section className="mt-24 p-6 max-w-4xl mx-auto space-y-8 bg-white rounded-2xl shadow-xl border border-gray-200">
           <h2 className="text-3xl font-bold text-gray-800">Booking Summary</h2>
@@ -497,7 +534,7 @@ const RoomBooking = () => {
           </div>
           {/* Total Price */}
           <div className="text-right text-2xl font-bold text-black mt-4">
-            Total Cost: ₹{roomPrice + tax + luggageCharge}
+            Total Cost: ₹{totalCost}
           </div>
           {/* User Info */}
           Enter your Required Details

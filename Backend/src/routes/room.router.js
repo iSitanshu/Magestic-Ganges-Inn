@@ -15,7 +15,6 @@ router1.route('/availableparticularroom').get(
 )
 
 router1.route('/verifyuser').post(
-    upload.fields([]),
     verifyUser
 )
 
