@@ -35,8 +35,7 @@ const TableBooking = () => {
     { label: 'Dinner', time: '07:00 PM to 10:00 PM', icon: '🌙' },
   ];
 
-  const no_of_tables = Math.floor(guestCount / 5) + 1;
- 
+  const no_of_tables = Math.ceil(guestCount / 5); 
 
   return (
     <>

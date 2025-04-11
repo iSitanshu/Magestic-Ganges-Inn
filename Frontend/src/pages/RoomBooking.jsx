@@ -1,26 +1,123 @@
 import React, { useContext, useState } from "react";
 import { assets } from "../assets/assets.js";
 import LoginPopup from "../components/LoginPopup.jsx";
-import { useNavigate } from 'react-router-dom'
-import Footer from '../components/Footer.jsx'
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import Footer from "../components/Footer.jsx";
 import UserContext from "../context/User/UserContext.js";
 import PopupContext from "../context/Popup/PopupContext.js";
+import Navbar2 from '../components/Navbar2.jsx'
 
 const RoomBooking = () => {
   const [step, setStep] = useState(1); // Booking steps
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [arrivalDate, setArrivalDate] = useState("");
   const [departureDate, setDepartureDate] = useState("");
-  const [showDropdown, setShowDropdown] = useState(false)
+  const [showDropdown, setShowDropdown] = useState(false);
   const [luggageDays, setLuggageDays] = useState(0);
   const [numRooms, setNumRooms] = useState(1);
   const [numAdults, setNumAdults] = useState(2);
   const [promoCode, setPromoCode] = useState("");
-  const { showLogin, setShowLogin } = useContext(PopupContext)
+  const { showLogin, setShowLogin } = useContext(PopupContext);
+  const { user } = useContext(UserContext);
+  const [showRoomAvailability, setShowRoomAvailability] = useState(false);
+  const [currentRoom, setCurrentRoom] = useState(null);
 
-  const { user } = useContext(UserContext)
+  const [verifyUser, setVerifyUser] = useState({
+    email: "",
+    password: "",
+    phoneno: ""
+  });
 
-  const navigate = useNavigate()
+  // Update the handleverifyuser function
+  const handleverifyuser = (e) => {
+    const { name, value } = e.target;
+    setVerifyUser((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const [roomStatus, setRoomStatus] = useState({
+    count1: 0,
+    count2: 0,
+    count3: 0,
+    count4: 0,
+  });
+
+  const dataincurrentRoom = async (index) => {
+    try{
+      const urls = [
+        "http://localhost:8000/api/v1/rooms/availableparticularroom?seat=3&balcony=true",
+        "http://localhost:8000/api/v1/rooms/availableparticularroom?seat=3&balcony=false",
+        "http://localhost:8000/api/v1/rooms/availableparticularroom?seat=2&balcony=true",
+        "http://localhost:8000/api/v1/rooms/availableparticularroom?seat=2&balcony=false"
+      ];
+
+      const response = await fetch(urls[index], {
+        method: 'GET',
+      })
+
+      if(response.ok) {
+        const data = await response.json();
+        setCurrentRoom(data.data.rooms[0])
+      }else {
+        const errorData = await response.json();
+        console.error(`${currState} failed:`, errorData);
+      }
+    } catch (error) {
+      console.error('Fetch failed:', error);
+    }
+  };
+
+  const [bookingDetails, setBookingDetails] = useState({
+    roomId: "",
+    fromDate: "",
+    toDate: "",
+    guest: ""
+  })
+
+  const [roomForm, setRoomForm] = useState({
+    roomType: "",
+    guests: 1,
+    luggage: false,
+  }); 
+
+  const handleRequestRoom = () => {
+    setShowRoomAvailability(true);
+    setBookingDetails({
+      ...bookingDetails,
+      fromDate: arrivalDate,
+      toDate: departureDate
+    });
+  };
+
+  const showAvailability = async () => {
+    try {
+      const urls = [
+        "http://localhost:8000/api/v1/rooms/available?seat=3&balcony=true",
+        "http://localhost:8000/api/v1/rooms/available?seat=3&balcony=false",
+        "http://localhost:8000/api/v1/rooms/available?seat=2&balcony=true",
+        "http://localhost:8000/api/v1/rooms/available?seat=2&balcony=false", // fixed typo "fals"
+      ];
+
+      const responses = await Promise.all(urls.map((url) => fetch(url)));
+      const jsonData = await Promise.all(
+        responses.map((res) => (res.ok ? res.json() : null))
+      );
+
+      // Count values only if response was OK
+      const newCounts = {
+        count1: jsonData[0]?.data?.count || 0,
+        count2: jsonData[1]?.data?.count || 0,
+        count3: jsonData[2]?.data?.count || 0,
+        count4: jsonData[3]?.data?.count || 0,
+      };
+
+      setRoomStatus(newCounts);
+      console.log(newCounts);
+    } catch (error) {
+      console.error("Fetch failed:", error);
+    }
+  };
+
+  const navigate = useNavigate();
 
   const rooms = [
     {
@@ -38,6 +135,7 @@ const RoomBooking = () => {
       ],
       image: assets.roomimage1,
       available: true,
+      count: roomStatus.count1,
     },
     {
       name: "Double Room with Balcony",
@@ -54,6 +152,7 @@ const RoomBooking = () => {
       ],
       image: assets.roomimage2,
       available: true,
+      count: roomStatus.count2,
     },
     {
       name: "Standard Double Room",
@@ -69,6 +168,7 @@ const RoomBooking = () => {
       ],
       image: assets.roomimage3,
       available: true,
+      count: roomStatus.count3,
     },
     {
       name: "Standard Triple Room",
@@ -84,22 +184,42 @@ const RoomBooking = () => {
       ],
       image: assets.roomimage4,
       available: true,
+      count: roomStatus.count4,
     },
   ];
 
   const toHome = () => {
-    navigate('/')
-  }
+    navigate("/");
+  };
   const toDinning = () => {
-    navigate('/RestaurantBooking')
-  }
+    navigate("/RestaurantBooking");
+  };
   const toHall = () => {
-    navigate('/HallBooking')
-  }
+    navigate("/HallBooking");
+  };
+
+  const handleRequestRoomClick = async () => {
+    if (!arrivalDate || !departureDate) return;
+
+    handleRequestRoom();
+    await showAvailability();
+  };
 
   const calculateNights = () => {
+    const today = new Date();
     const arrival = new Date(arrivalDate);
     const departure = new Date(departureDate);
+
+    if (arrival < today) {
+      alert("Arrival date cannot be before today.");
+      return 0;
+    }
+
+    if (arrival >= departure) {
+      alert("Departure date must be after the arrival date.");
+      return 0;
+    }
+
     const diffTime = departure - arrival;
     return Math.max(Math.ceil(diffTime / (1000 * 60 * 60 * 24)), 0);
   };
@@ -110,222 +230,203 @@ const RoomBooking = () => {
   const luggageCharge = luggageDays * 10;
   const totalCost = roomPrice + tax + luggageCharge;
 
+  const handlePayment = () => {
+    if (!user) {
+      setShowLogin(true);
+    } else {
+      console.log(verifyUser)
+      ///update in Room booking DB
+
+      navigate("/UserDetails");
+    }
+  };
+
+  const todayStr = new Date().toISOString().split("T")[0];
+
   return (
     <>
       {showLogin && <LoginPopup setShowLogin={setShowLogin} />}
 
       {/* Navbar */}
-      <nav className="flex justify-between items-center px-6 md:px-12 py-4 bg-white shadow-md fixed top-0 left-0 right-0 z-50">
-        <div className="flex items-center gap-2">
-          <img
-            src={assets.logo}
-            alt="Logo"
-            className="h-10 hover:cursor-pointer"
-            onClick={() => toHome()}
-          />
-          <span
-            className="text-xl font-bold text-gray-800 hover: cursor-pointer"
-            onClick={() => toHome()}
-          >
-            Majestic Ganges Inn
-          </span>
-        </div>
-        <ul className="hidden md:flex gap-6 text-gray-700 font-medium">
-          <li
-            onClick={() => toHome()}
-            className="hover:text-blue-600 cursor-pointer"
-          >
-            Home
-          </li>
-          <li onClick={() => toRoom()} className="hover:text-blue-600 cursor-pointer">Rooms</li>
-          <li onClick={() => toDinning()} className="hover:text-blue-600 cursor-pointer">Dining</li>
-          <li onClick={() => toHall()} className="hover:text-blue-600 cursor-pointer">Hall</li>
-          <li onClick={() => toHome()} className="hover:text-blue-600 cursor-pointer">Location</li>
-        </ul>
-        {/* Show login/signup button when no user is logged in */}
-        {!user && (
-            <button
-              onClick={() => setShowLogin(true)}
-              className="bg-yellow-500 pointer-cursor hover:bg-black text-white font-semibold py-2 px-4 rounded-lg"
-            >
-              Login / Signup
-            </button>
-          )}
-          {/* /* Show user dropdown when logged in */} 
-                {user && (
-                <div className="relative">
-                  <i
-                  className="text-black ri-user-fill text-3xl cursor-pointer"
-                  onClick={() => setShowDropdown((prev) => !prev)}
-                  ></i>
-                  {showDropdown && (
-                  <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-md text-black">
-                    <button
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-200"
-                    onClick={() => navigate('/UserDetails')}
-                    >
-                    Profile
-                    </button>
-                    <button
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-200"
-                    onClick={() => logoutUser()}
-                    >
-                    Logout
-                    </button>
-                  </div>
-                  )}
-                </div>
-                )}
-              </nav>
+      <Navbar2 />
 
-              {/* Step 1: Booking Form */}
+      {/* Step 1: Booking Form */}
       {step === 1 && (
-        <section className="mt-24 min-h-screen flex items-center justify-center p-6 bg-gray-50">
-          <div className="bg-white p-8 rounded-2xl shadow-xl max-w-2xl w-full space-y-6">
-            <h2 className="text-xl font-bold text-gray-800">Book Your Stay</h2>
+        <>
+          <section className="min-h-screen flex items-center justify-center p-6 bg-gray-50">
+            <div className="bg-white p-8 rounded-2xl shadow-xl max-w-2xl w-full space-y-6">
+              <h2 className="text-xl font-bold text-gray-800">
+                Book Your Stay
+              </h2>
 
-            <div className="grid md:grid-cols-2 gap-4">
-              {/* Dates */}
-              <div>
-                <label className="text-sm text-gray-600">Arrival</label>
-                <input
-                  type="date"
-                  value={arrivalDate}
-                  onChange={(e) => setArrivalDate(e.target.value)}
-                  className="w-full border p-2 rounded"
-                />
-              </div>
-              <div>
-                <label className="text-sm text-gray-600">Departure</label>
-                <input
-                  type="date"
-                  value={departureDate}
-                  onChange={(e) => setDepartureDate(e.target.value)}
-                  className="w-full border p-2 rounded"
-                />
-              </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                {/* Dates */}
+                <div>
+                  <label className="text-sm text-gray-600">Arrival</label>
+                  <input
+                    type="date"
+                    value={arrivalDate}
+                    onChange={(e) => setArrivalDate(e.target.value)}
+                    min={todayStr}
+                    className="w-full border p-2 rounded"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-gray-600">Departure</label>
+                  <input
+                    type="date"
+                    value={departureDate}
+                    onChange={(e) => setDepartureDate(e.target.value)}
+                    min={arrivalDate || todayStr} // disable dates before arrival date or today if not set
+                    className="w-full border p-2 rounded"
+                  />
+                </div>
 
-              {/* Occupancy */}
-              <div>
-                <label className="text-sm text-gray-600">Number of Rooms</label>
-                <select
-                  value={numRooms}
-                  onChange={(e) => setNumRooms(parseInt(e.target.value))}
-                  className="w-full border p-2 rounded"
-                >
-                  {[1, 2, 3, 4].map((num) => (
-                    <option key={num} value={num}>
-                      {num}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="text-sm text-gray-600">Adults</label>
-                <select
-                  value={numAdults}
-                  onChange={(e) => setNumAdults(parseInt(e.target.value))}
-                  className="w-full border p-2 rounded"
-                >
-                  {[1, 2, 3, 4].map((num) => (
-                    <option key={num} value={num}>
-                      {num}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Promo Code */}
-              <div className="md:col-span-2">
-                <label className="text-sm text-gray-600">Promo Code</label>
-                <input
-                  type="text"
-                  value={promoCode}
-                  onChange={(e) => setPromoCode(e.target.value)}
-                  placeholder="Enter promo code"
-                  className="w-full border p-2 rounded"
-                />
-              </div>
-
-              {/* Booking Summary */}
-              <div className="md:col-span-2 text-right">
-                <p className="font-bold text-gray-700 text-lg">
-                  Your booking summary:
-                  <span className="text-yellow-600 ml-2">€ 0.00</span>
-                </p>
-              </div>
-            </div>
-
-            <button
-              onClick={() => arrivalDate && departureDate && setStep(2)}
-              disabled={!arrivalDate || !departureDate}
-              className="w-full bg-yellow-600 text-white font-bold py-2 px-4 rounded hover:bg-yellow-700 transition disabled:opacity-50"
-            >
-              Request Room
-            </button>
-          </div>
-        </section>
-      )}
-
-      {/* Step 2: Room Options */}
-      {step === 2 && (
-        <section className="mt-24 p-6 space-y-8">
-          <h2 className="text-2xl font-bold text-center">Select Your Room</h2>
-          {rooms.map((room, index) => (
-            <div
-              key={index}
-              className="bg-white p-6 rounded-xl shadow-lg border"
-            >
-              <div className="flex flex-col md:flex-row gap-6">
-                <img
-                  src={room.image}
-                  alt={room.name}
-                  className="w-full md:w-1/3 rounded-xl object-cover"
-                />
-                <div className="flex-1 space-y-2">
-                  <h3 className="text-xl font-semibold">{room.name}</h3>
-                  <p className="text-sm text-gray-600">
-                    {room.type} • {room.bed}
-                  </p>
-                  <ul className="list-disc list-inside text-sm text-gray-600">
-                    {room.features.map((feature, i) => (
-                      <li key={i}>{feature}</li>
+                {/* Occupancy */}
+                <div>
+                  <label className="text-sm text-gray-600">
+                    Number of Rooms
+                  </label>
+                  <select
+                    value={numRooms}
+                    onChange={(e) => setNumRooms(parseInt(e.target.value))}
+                    className="w-full border p-2 rounded"
+                  >
+                    {[1].map((num) => (
+                      <option key={num} value={num}>
+                        {num}
+                      </option>
                     ))}
-                  </ul>
-                  <p className="text-xl font-bold text-gray-800">
-                    $ {room.price} / night
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-sm text-gray-600">Adults</label>
+                  <select
+                    value={numAdults}
+                    onChange={(e) => setNumAdults(parseInt(e.target.value))}
+                    className="w-full border p-2 rounded"
+                  >
+                    {[1, 2, 3].map((num) => (
+                      <option key={num} value={num}>
+                        {num}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Promo Code */}
+                <div className="md:col-span-2">
+                  <label className="text-sm text-gray-600">Promo Code</label>
+                  <input
+                    type="text"
+                    value={promoCode}
+                    onChange={(e) => setPromoCode(e.target.value)}
+                    placeholder="Enter promo code"
+                    className="w-full border p-2 rounded"
+                  />
+                </div>
+
+                {/* Booking Summary */}
+                <div className="md:col-span-2 text-right">
+                  <p className="font-bold text-gray-700 text-lg">
+                    Your booking summary:
+                    <span className="text-yellow-600 ml-2">€ 0.00</span>
                   </p>
                 </div>
-                <div className="flex flex-col justify-between">
-                  {!room.available ? (
-                    <p className="text-red-600 text-sm font-medium">
-                      Not Available
-                      <br />
-                      <span className="underline cursor-pointer">
-                        Check Calendar
-                      </span>
-                    </p>
-                  ) : (
-                    <button
-                      onClick={() => {
-                        setSelectedRoom(room);
-                        setStep(3);
-                      }}
-                      className="bg-yellow-600 text-white py-2 px-4 rounded hover:bg-yellow-700"
-                    >
-                      Book Now
-                    </button>
-                  )}
-                </div>
               </div>
+
+              <button
+                onClick={async (e) => {
+                  e.preventDefault();
+                  await handleRequestRoomClick();
+                  const target = document.querySelector("#selectyourroom");
+                  if (target) {
+                    target.scrollIntoView({ behavior: "smooth" });
+                  }
+                }}
+                disabled={!arrivalDate || !departureDate}
+                className="w-full bg-yellow-600 text-white font-bold py-2 px-4 rounded hover:bg-yellow-700 transition disabled:opacity-50"
+              >
+                Request Room
+              </button>
             </div>
-          ))}
-        </section>
+          </section>
+          <>
+            {showRoomAvailability && (
+              <section id="selectyourroom" className="mt-24 p-6 space-y-8">
+                <h2 className="text-2xl font-bold text-center">
+                  Select Your Room
+                </h2>
+                {rooms.map((room, index) => (
+                  <div
+                    key={index}
+                    className="bg-white p-6 rounded-xl shadow-lg border"
+                  >
+                    <div className="flex flex-col md:flex-row gap-6">
+                      <img
+                        src={room.image}
+                        alt={room.name}
+                        className="w-full md:w-1/3 rounded-xl object-cover"
+                      />
+                      <div className="flex-1 space-y-2">
+                        <h3 className="text-xl font-semibold">{room.name}</h3>
+                        <p className="text-sm text-gray-600">
+                          {room.type} • {room.bed}
+                        </p>
+                        <ul className="list-disc list-inside text-sm text-gray-600">
+                          {room.features.map((feature, i) => (
+                            <li key={i}>{feature}</li>
+                          ))}
+                        </ul>
+                        <p className="text-xl font-bold text-gray-800">
+                          $ {room.price} / night
+                        </p>
+                      </div>
+                      <div className="flex flex-col justify-between">
+                        {!room.available ? (
+                          <p className="text-red-600 text-sm font-medium">
+                            Not Available
+                            <br />
+                            <span className="underline cursor-pointer">
+                              Check Calendar
+                            </span>
+                          </p>
+                        ) : room.count === 0 ? (
+                          <p className="text-red-600 text-sm font-medium">
+                            Room is currently not available
+                          </p>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => {
+                                setSelectedRoom(room);
+                                setStep(2);
+                                dataincurrentRoom(index);
+                              }}
+                              className="bg-yellow-600 text-white py-2 px-4 rounded hover:bg-yellow-700"
+                            >
+                              Book Now
+                            </button>
+                            {showRoomAvailability && (
+                              <p className="text-gray-600 text-sm mt-1">
+                                Available Count: {room.count}
+                              </p>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </section>
+            )}
+          </>
+        </>
       )}
 
       {/* Step 3: Select Room  */}
-      {step === 3 && selectedRoom && (
+      {step === 2 && selectedRoom && (
         <section className="mt-24 p-6 max-w-4xl mx-auto space-y-8 bg-white rounded-2xl shadow-xl border border-gray-200">
           <h2 className="text-3xl font-bold text-gray-800">Booking Summary</h2>
           {/* Room & Stay Details */}
@@ -388,8 +489,8 @@ const RoomBooking = () => {
           </div>
           {/* Booking Fee */}
           <div className="flex justify-between items-center text-sm text-gray-700">
-              Including all the Booking Charge:
-              <div className="flex justify-between">
+            Including all the Booking Charge:
+            <div className="flex justify-between">
               <span className="font-medium">Tax (₹15/night):</span>
               <span className="font-semibold text-yellow-700">₹{tax}</span>
             </div>
@@ -402,18 +503,37 @@ const RoomBooking = () => {
           Enter your Required Details
           <div className="grid md:grid-cols-2 gap-4">
             <input
-              type="text"
-              placeholder="Full Name"
-              className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
-            />
-            <input
               type="email"
+              name="email"
+              onChange={handleverifyuser}
               placeholder="Enter your registered Email"
               className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
             />
+            <input
+              type="password"
+              name="password"
+              onChange={handleverifyuser}
+              placeholder="Enter your password"
+              className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            />
+            <input
+              type="text"
+              name="phoneno"
+              onChange={handleverifyuser}
+              placeholder="Enter your Phone No"
+              className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            />
           </div>
-          <span className="text-red-500">*Make sure login/signup before making payment</span>
-          <button className="mt-6 w-full bg-green-600 text-white py-3 px-6 rounded-xl font-semibold text-lg hover:bg-green-700 transition cursor-pointer">
+          <span className="text-red-500">
+            *Make sure login/signup before making payment
+          </span>
+          <button
+            onClick={handlePayment}
+            disabled={
+              !verifyUser.email || !verifyUser.password || !verifyUser.phoneno
+            }
+            className="mt-6 w-full bg-green-600 text-white py-3 px-6 rounded-xl font-semibold text-lg hover:bg-green-700 transition cursor-pointer disabled:opacity-50"
+          >
             Make Payment
           </button>
         </section>

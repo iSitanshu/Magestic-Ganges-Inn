@@ -1,8 +1,11 @@
 import React, { useContext, useState } from 'react';
 import UserContext from '../context/User/UserContext';
+import PopupContext from '../context/Popup/PopupContext';
+import LoginPopup from './LoginPopup';
 
 const Member = () => {
   const { setUser } = useContext(UserContext)
+  const { showLogin, setShowLogin } = useContext(PopupContext)
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -31,14 +34,16 @@ const Member = () => {
         alert('Already a Member')
       }else {
         const errorData = await response.json();
-        alert('login')
+        setShowLogin(true)
       }
     } catch (error) {
-      alert('Please Login before being a member')
+      setShowLogin(true)
     }
   };
 
   return (
+    <>
+    {showLogin && <LoginPopup />}
     <div className=" py-22 px-4">
       <h1 className="text-3xl font-bold text-center text-black mb-8">Be Our Member</h1>
       <form
@@ -91,6 +96,7 @@ const Member = () => {
         </button>
       </form>
     </div>
+    </>
   );
 };
 
