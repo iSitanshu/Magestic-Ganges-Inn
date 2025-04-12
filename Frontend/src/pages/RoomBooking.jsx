@@ -94,7 +94,7 @@ const RoomBooking = () => {
   const showAvailability = async () => {
     try {
       const urls = [
-        "http://localhost:8000/api/v1/rooms/available?seat=3&balcony=true",
+        "http://localhost:8000/api/v1/rooms/availableparticularroom",
         "http://localhost:8000/api/v1/rooms/available?seat=3&balcony=false",
         "http://localhost:8000/api/v1/rooms/available?seat=2&balcony=true",
         "http://localhost:8000/api/v1/rooms/available?seat=2&balcony=false",
