@@ -27,4 +27,9 @@ import roomRouter from './routes/room.router.js'
 
 app.use("/api/v1/rooms", roomRouter)
 
+
+import infoRouter from './routes/info.routes.js'
+
+app.use("/api/v1/info", infoRouter)
+
 export { app }

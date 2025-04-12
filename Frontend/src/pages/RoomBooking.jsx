@@ -6,6 +6,7 @@ import Footer from "../components/Footer.jsx";
 import UserContext from "../context/User/UserContext.js";
 import PopupContext from "../context/Popup/PopupContext.js";
 import Navbar2 from "../components/Navbar2.jsx";
+import { asyncHandler } from "../../../Backend/src/utils/asyncHandler.js";
 
 const RoomBooking = () => {
   const [step, setStep] = useState(1); // Booking steps
@@ -21,7 +22,12 @@ const RoomBooking = () => {
   const { user, setUser } = useContext(UserContext);
   const [showRoomAvailability, setShowRoomAvailability] = useState(false);
   const [roomnumber, setRoomNumber] = useState(null);
-
+  
+  const [type1, setType1] = useState(null)
+  const [type2, setType2] = useState(null)
+  const [type3, setType3] = useState(null)
+  const [type4, setType4] = useState(null)
+  
   const [verifyUser, setVerifyUser] = useState({
     email: "",
     password: "",
@@ -34,46 +40,32 @@ const RoomBooking = () => {
     setVerifyUser((prev) => ({ ...prev, [name]: value }));
   };
 
-  const [roomStatus, setRoomStatus] = useState({
-    count1: 0,
-    count2: 0,
-    count3: 0,
-    count4: 0,
-  });
-
-  // Added currentRoom state to fix undefined error
-  const [currentRoom, setCurrentRoom] = useState(null);
-
   const dataincurrentRoom = async (index) => {
-    try {
-      const urls = [
-        "http://localhost:8000/api/v1/rooms/availableparticularroom?seat=3&balcony=true",
-        "http://localhost:8000/api/v1/rooms/availableparticularroom?seat=3&balcony=false",
-        "http://localhost:8000/api/v1/rooms/availableparticularroom?seat=2&balcony=true",
-        "http://localhost:8000/api/v1/rooms/availableparticularroom?seat=2&balcony=false",
-      ];
-
-      const response = await fetch(urls[index], {
-        method: "GET",
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setCurrentRoom(data.data.rooms[0]);
-        setBookingDetails({
-          ...bookingDetails,
-          roomId: data.data.rooms[0].room_no, // Updated to use roomnumber from currentRoom
-        });
-      } else {
-        const errorData = await response.json();
-        console.error("Room request failed:", errorData);
-      }
-    } catch (error) {
-      console.error("Fetch failed:", error);
+    if (index === 1) {
+      setBookingDetails((prev) => ({
+        ...prev,
+        roomId: type1?.[0]?._id
+      }));
+    } else if (index === 2) {
+      setBookingDetails((prev) => ({
+        ...prev,
+        roomId: type2?.[0]?._id
+      }));
+    } else if (index === 3) {
+      setBookingDetails((prev) => ({
+        ...prev,
+        roomId: type3?.[0]?._id
+      }));
+    } else if (index === 4) {
+      setBookingDetails((prev) => ({
+        ...prev,
+        roomId: type4?.[0]?._id
+      }));
     }
   };
 
   const [bookingDetails, setBookingDetails] = useState({
+    userId: "",
     roomId: "",
     fromDate: "",
     toDate: "",
@@ -91,33 +83,74 @@ const RoomBooking = () => {
     });
   };
 
+  const particularRoom = [
+    { "id": 101, "roomId": "67f795f354d898464a58ec23" },
+    { "id": 102, "roomId": "67f7968654d898464a58ec24" },
+    { "id": 103, "roomId": "67f796f154d898464a58ec25" },
+    { "id": 104, "roomId": "67f7970854d898464a58ec26" },
+    { "id": 105, "roomId": "67f7978554d898464a58ec27" },
+    { "id": 106, "roomId": "67f797aa54d898464a58ec28" },
+    { "id": 107, "roomId": "67f797d754d898464a58ec29" },
+    { "id": 108, "roomId": "67f797e754d898464a58ec2a" },
+    { "id": 109, "roomId": "67f7980a54d898464a58ec2b" },
+    { "id": 110, "roomId": "67f7981a54d898464a58ec2c" },
+    { "id": 111, "roomId": "67f7a94fdb0ae61806523f84" },
+]
+
+
   const showAvailability = async () => {
     try {
-      const urls = [
-        "http://localhost:8000/api/v1/rooms/availableparticularroom",
-        "http://localhost:8000/api/v1/rooms/available?seat=3&balcony=false",
-        "http://localhost:8000/api/v1/rooms/available?seat=2&balcony=true",
-        "http://localhost:8000/api/v1/rooms/available?seat=2&balcony=false",
-      ];
-
-      const responses = await Promise.all(urls.map((url) => fetch(url)));
-      const jsonData = await Promise.all(
-        responses.map((res) => (res.ok ? res.json() : null))
-      );
-
-      // Count values only if response was OK
-      const newCounts = {
-        count1: jsonData[0]?.data?.count || 0,
-        count2: jsonData[1]?.data?.count || 0,
-        count3: jsonData[2]?.data?.count || 0,
-        count4: jsonData[3]?.data?.count || 0,
-      };
-
-      setRoomStatus(newCounts);
+      // Step 2: POST requests for specific room availability
+      const type1Ids = [101, 102, 103];
+      const type2Ids = [104];
+      const type3Ids = [105, 106, 107, 108, 109];
+      const type4Ids = [110];
+  
+      const tempType1 = [];
+      const tempType2 = [];
+      const tempType3 = [];
+      const tempType4 = [];
+  
+      for (let room of particularRoom) {
+        const response = await fetch('http://localhost:8000/api/v1/rooms/availableparticularroom', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            roomId: room.roomId,
+            fromDate: arrivalDate,
+            toDate: departureDate
+          })
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          const roomData = data.data.room;
+  
+          if (type1Ids.includes(room.id)) {
+            tempType1.push(roomData);
+          } else if (type2Ids.includes(room.id)) {
+            tempType2.push(roomData);
+          } else if (type3Ids.includes(room.id)) {
+            tempType3.push(roomData);
+          } else if (type4Ids.includes(room.id)) {
+            tempType4.push(roomData);
+          }
+        } else if (response.status === 400) {
+          console.log(`Room ID ${room.id} is unavailable`);
+        } else {
+          const errorData = await response.json();
+          console.log(`Error for room ${room.id}:`, errorData);
+        }
+      }
+  
+      setType1(tempType1);
+      setType2(tempType2);
+      setType3(tempType3);
+      setType4(tempType4);
     } catch (error) {
-      console.error("Fetch failed:", error);
+      console.log("Fetch failed (POST requests):", error);
     }
-  };
+  }
 
   const navigate = useNavigate();
 
@@ -137,7 +170,7 @@ const RoomBooking = () => {
       ],
       image: assets.roomimage1,
       available: true,
-      count: roomStatus.count1,
+      count: type1==null?0:type1.length,
     },
     {
       name: "Double Room with Balcony",
@@ -154,7 +187,7 @@ const RoomBooking = () => {
       ],
       image: assets.roomimage2,
       available: true,
-      count: roomStatus.count2,
+      count: type2==null?0:type2.length,
     },
     {
       name: "Standard Double Room",
@@ -170,7 +203,7 @@ const RoomBooking = () => {
       ],
       image: assets.roomimage3,
       available: true,
-      count: roomStatus.count3,
+      count: type3==null?0:type3.length,
     },
     {
       name: "Standard Triple Room",
@@ -186,7 +219,7 @@ const RoomBooking = () => {
       ],
       image: assets.roomimage4,
       available: true,
-      count: roomStatus.count4,
+      count: type4==null?0:type4.length,
     },
   ];
 
@@ -232,51 +265,82 @@ const RoomBooking = () => {
   const luggageCharge = luggageDays * 10;
   const totalCost = roomPrice + tax + luggageCharge;
 
-  const handlePayment = async () => {
-    if (!user) {
+  const handleConfirmation = () => {
+    if (!user || !user.user) {
       setShowLogin(true);
-      console.log(bookingDetails);
-    } else {
-      await verification();
-      await insertinroombooking()
-      navigate("/UserDetails");
+      return;
     }
-  };
+    setBookingDetails({
+      ...bookingDetails,
+      userId: user.user._id,
+      totalPrice: totalCost
+    });
+    
+  }
+
+  const handlePayment = async () => {  
+    const verifiedUser = await verification();
+    console.log(JSON.stringify(myObject, null, 2));
+      console.log(bookingDetails)
+      await insertinroombooking();
+      // navigate("/UserDetails");
+    }
+  
 
   const insertinroombooking = async (req, res) => {
-    
+    console.log(bookingDetails)
+    try {
+      const response = await fetch('http://localhost:8000/api/v1/rooms/newBooking', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ bookingDetails })
+      });
+
+      if (response.ok) {
+      const data = await response.json();
+      console.log("Booking successful:");
+      alert("Booking confirmed successfully!");
+      } else if (response.status === 400) {
+      const errorData = await response.json();
+      console.error("Booking failed:", errorData);
+      alert("Booking failed. Please check your details and try again.");
+      } else {
+      const errorData = await response.json();
+      console.error("Unexpected error:", errorData);
+      alert("An unexpected error occurred. Please try again later.");
+      }
+    } catch (error) {
+      console.error("Fetch failed:", error);
+      alert("Unable to process your booking at the moment. Please try again later.");
+    }
   }
 
   const verification = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:8000/api/v1/rooms/verifyuser",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(verifyUser),
-        }
-      );
-
+      const response = await fetch("http://localhost:8000/api/v1/rooms/verifyuser", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(verifyUser),
+      });
+  
       if (response.ok) {
         const data = await response.json();
-        setUser(data.data);
-        
-        setBookingDetails((prev) => {
-          const updated = { ...prev, totalPrice: totalCost };
-          console.log("Updated bookingDetails:", updated);
-          return updated;
-        });
+        setUser(data.data); // Set the user first
+        return data.data; // Return user data to be used immediately
       } else if (response.status === 404) {
-        alert(`Invalid User Credentials`);
+        alert("Invalid User Credentials");
+        return null;
       } else {
         const errorData = await response.json();
         console.error("Verification failed:", errorData);
+        return null;
       }
     } catch (error) {
       console.error("Fetch failed:", error);
+      return null;
     }
   };
+  
 
   const todayStr = new Date().toISOString().split("T")[0];
 
@@ -560,6 +624,13 @@ const RoomBooking = () => {
               placeholder="Enter your Phone No"
               className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
             />
+            <button
+            className="bg-green-600 text-white rounded-xl font-semibold text-lg hover:bg-green-700 transition cursor-pointer disabled:opacity-50"
+            disabled={
+              !verifyUser.email || !verifyUser.password || !verifyUser.phoneno
+            }
+            onClick={handleConfirmation}
+            >Confirm Details</button>
           </div>
           <span className="text-red-500">
             *Make sure login/signup before making payment
