@@ -7,12 +7,11 @@ const restaurantBookingSchema = new Schema(
       ref: 'User',
       required: true
     },
-    tableId: {
-      type: Schema.Types.ObjectId,
-      ref: 'RestaurantTable',
+    guests: {
+      type: Number,
       required: true
     },
-    guests: {
+    seats: {
       type: Number,
       required: true
     },

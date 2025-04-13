@@ -2,18 +2,28 @@ import React, { useContext, useState } from 'react';
 import { assets } from '../assets/assets';
 import Navbar2 from '../components/Navbar2';
 import Footer from '../components/Footer';
-import { NavLink } from 'react-router-dom';
-import UserContext from '../context/User/UserContext';
-import PopupContext from '../context/Popup/PopupContext';
+import { NavLink, useNavigate } from 'react-router-dom';
 import ReservationSummary from './ReservationSummary';
+import UserContext from '../context/User/UserContext.js';
+import PopupContext from '../context/Popup/PopupContext.js';
+import RestaurantContext from '../context/Restaurant/RestaurantContext.js';
 
 const TableBooking = () => {
   const { showLogin, setShowLogin } = useContext(PopupContext)
   const { user } = useContext(UserContext)
+  const { restaurantData ,setRestaurantData } = useContext(RestaurantContext)
   const [guestCount, setGuestCount] = useState(1);
   const [selectedDate, setSelectedDate] = useState(new Date().toDateString());
   const [selectedTime, setSelectedTime] = useState('');
   const [isSummaryVisible, setIsSummaryVisible] = useState(false); // New state
+  const [restaurant, setRestaurant] = useState({
+    userId: '',
+    guest: '',
+    seats: '',
+    bookingDate: '',
+    timeSlot: ''
+  })
+  const navigate = useNavigate()
 
   const handleGuestChange = (type) => {
     setGuestCount((prev) =>
@@ -31,11 +41,54 @@ const TableBooking = () => {
   });
 
   const timeSlots = [
+    { label: 'Morning', time: '08:00 AM to 12:00 PM', icon: '🌅' },
     { label: 'Lunch', time: '12:00 PM to 03:00 PM', icon: '🌞' },
+    { label: 'Evening', time: '03:00 PM to 07:00 PM', icon: '⛅' },
     { label: 'Dinner', time: '07:00 PM to 10:00 PM', icon: '🌙' },
   ];
 
   const no_of_tables = Math.ceil(guestCount / 5); 
+
+  const adddatainrestaurant = async () => {
+    setRestaurant({
+      ...restaurant,
+      userId: user?.user?._id,
+      guests: guestCount,
+      seats: no_of_tables,
+      bookingDate: new Date(selectedDate).toISOString().split('T')[0], // Format to YYYY-MM-DD
+      timeSlot: selectedTime
+    })
+  }
+
+  const handleRestaurantApi = async () => {
+    try{
+      const response = await fetch('http://localhost:8000/api/v1/info/currentrestaurantbooking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(restaurant)
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data.data);
+        setRestaurantData(data.data)
+        alert('Restaurant Booked Successfully');
+        setIsSummaryVisible(true)
+      } else {
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await response.json();
+          console.log(errorData);
+        } else {
+          console.error('Unexpected response format:', await response.text());
+        }
+      }
+    } catch (error) {
+      console.log(error)
+    }}
+    
+  const hello = () => {
+    console.log(`final = ${JSON.stringify(restaurant)}`);
+  }
 
   return (
     <>
@@ -106,8 +159,9 @@ const TableBooking = () => {
                   const isToday = selectedDate === currentTime.toDateString();
                   const isSlotDisabled =
                     isToday &&
-                    ((slot.label === 'Lunch' && currentTime.getHours() >= 15) ||
-                      (slot.label === 'Dinner' && currentTime.getHours() >= 22) ||
+                    ((slot.label === 'Morning' && currentTime.getHours() >= 12) ||
+                      (slot.label === 'Lunch' && (currentTime.getHours() < 12 || currentTime.getHours() >= 15)) ||
+                      (slot.label === 'Evening' && (currentTime.getHours() < 15 || currentTime.getHours() >= 19)) ||
                       (slot.label === 'Dinner' && currentTime.getHours() < 19));
 
                   return (
@@ -132,6 +186,8 @@ const TableBooking = () => {
               </div>
             </div>
 
+            {/*
+
             {/* Discount Info */}
             <div className="p-4 border-l-4 border-green-500 bg-green-50 rounded">
               <h3 className="text-lg font-bold text-green-700">🎓 Student Exclusive</h3>
@@ -141,12 +197,41 @@ const TableBooking = () => {
                 <em>*ID card mandatory.</em>
               </p>
             </div>
+            {/* Confirm Button */}
+                  <div className="text-center mt-4">
+                    <button
+                    onClick={() => {
+                      if (!user) {
+                      setShowLogin(true);
+                      } else {
+                        adddatainrestaurant();
+                        hello()
+                      setSelectedTime('Confirmed');
+                      }
+                    }}
+                    disabled={!selectedDate || !selectedTime}
+                    className={`px-6 py-3 rounded-lg text-lg font-semibold shadow ${
+                      selectedTime === 'Confirmed'
+                      ? 'bg-green-600 text-white'
+                      : 'bg-gray-200 text-gray-500 cursor-pointer hover:bg-gray-300'
+                    }`}
+                    >
+                    {selectedTime === 'Confirmed' ? 'Confirmed' : 'Confirm'}
+                    </button>
+                  </div>
 
-            {/* Proceed Button */}
+                  {/* Disable Proceed Button */}
             <div className="text-center">
               <button
-                onClick={() => setIsSummaryVisible(true)} // Toggle state
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-lg font-semibold shadow"
+                onClick={() => {
+                  handleRestaurantApi();
+                }}
+                disabled={!selectedDate || !selectedTime || selectedTime !== 'Confirmed'}
+                className={`px-6 py-3 rounded-lg text-lg font-semibold shadow ${
+                  !selectedDate || !selectedTime || selectedTime !== 'Confirmed'
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-blue-600 hover:bg-blue-700 text-white'
+                }`}
               >
                 Proceed to book the reservation
               </button>
@@ -158,7 +243,6 @@ const TableBooking = () => {
             selectedDate={selectedDate}
             selectedTime={selectedTime}
           />
-
         )}
       </div>
       <Footer />

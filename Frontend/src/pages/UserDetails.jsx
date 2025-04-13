@@ -5,9 +5,10 @@ import UserContext from "../context/User/UserContext";
 import { assets } from "../assets/assets";
 import { Link } from "react-router-dom";
 
-// Component for rendering booking list (works for both current and previous)
+// Component for rendering booking list (works for all categories)
 const BookingList = ({ bookings, emptyMessage }) => {
-  if (bookings.length === 0) return <p className="text-gray-500">{emptyMessage}</p>;
+  if (bookings.length === 0)
+    return <p className="text-gray-500">{emptyMessage}</p>;
   return (
     <ul className="space-y-4">
       {bookings.map((booking, index) => (
@@ -22,10 +23,12 @@ const BookingList = ({ bookings, emptyMessage }) => {
                 Room {booking.roomNumber}
               </div>
               <div className="text-sm text-gray-600">
-                <strong>From:</strong> {new Date(booking.fromDate).toLocaleDateString()}
+                <strong>From:</strong>{" "}
+                {new Date(booking.fromDate).toLocaleDateString()}
               </div>
               <div className="text-sm text-gray-600">
-                <strong>To:</strong> {new Date(booking.toDate).toLocaleDateString()}
+                <strong>To:</strong>{" "}
+                {new Date(booking.toDate).toLocaleDateString()}
               </div>
             </div>
             {/* Right Info */}
@@ -34,7 +37,8 @@ const BookingList = ({ bookings, emptyMessage }) => {
                 <strong>Guests:</strong> {booking.guests || "N/A"}
               </div>
               <div className="text-gray-800 font-medium">
-                <strong>Total:</strong> ₹{booking.totalPrice?.toLocaleString() || "N/A"}
+                <strong>Total:</strong>{" "}
+                ₹{booking.totalPrice?.toLocaleString() || "N/A"}
               </div>
             </div>
           </div>
@@ -47,12 +51,19 @@ const BookingList = ({ bookings, emptyMessage }) => {
 const UserDetails = () => {
   const { user } = useContext(UserContext);
   const [activeTab, setActiveTab] = useState("current");
+  // Room bookings (for "current" and "previous" tabs)
   const [currentBookings, setCurrentBookings] = useState([]);
   const [previousBookings, setPreviousBookings] = useState([]);
+  // Restaurant bookings
+  const [currentRestaurantBookings, setCurrentRestaurantBookings] = useState([]);
+  const [prevRestaurantBookings, setPrevRestaurantBookings] = useState([]);
+  // Hall bookings
+  const [currentHallBooking, setCurrentHallBooking] = useState([]);
+  const [prevHallBooking, setPrevHallBooking] = useState([]);
 
   const userInfo = user?.user;
 
-  // Fetch previous bookings
+  // Fetch Room Previous Bookings
   const handlePreviousBooking = async () => {
     try {
       const response = await fetch(`http://localhost:8000/api/v1/info/previousbookingdetails`, {
@@ -60,7 +71,6 @@ const UserDetails = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: user.user._id }),
       });
-
       if (response.ok) {
         const data = await response.json();
         const allBookings = data?.data || [];
@@ -76,21 +86,93 @@ const UserDetails = () => {
         setPreviousBookings(past);
       } else {
         const errorData = await response.json();
-        if (response.status === 404) {
-          alert("You have no previous bookings.");
-        } else {
-          console.error("Fetch error:", errorData);
-        }
+        if (response.status === 404)
+          alert("You have no previous room bookings.");
+        else console.error("Fetch error:", errorData);
       }
     } catch (error) {
       console.error("Network error:", error);
     }
   };
 
-  // Fetch previous bookings when switching to the "previous" tab if not already loaded.
+  // Fetch Restaurant Previous Bookings
+  const handleRestaurantPreviousBooking = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/v1/info/previousrestaurantbooking`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.user._id }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const allBookings = data?.data || [];
+        const today = new Date();
+        const past = [];
+        const upcoming = [];
+        allBookings.forEach((booking) => {
+          const toDate = new Date(booking.toDate);
+          if (toDate < today) past.push(booking);
+          else upcoming.push(booking);
+        });
+        setCurrentRestaurantBookings(upcoming);
+        setPrevRestaurantBookings(past);
+      } else {
+        const errorData = await response.json();
+        if (response.status === 404)
+          alert("You have no previous restaurant bookings.");
+        else console.error("Fetch error:", errorData);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+    }
+  };
+
+  // Fetch Hall Previous Bookings (Assuming you have an endpoint for hall bookings)
+  const handleHallPreviousBooking = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/v1/info/previousrestaurantbooking`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.user._id }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const allBookings = data?.data || [];
+        const today = new Date();
+        const past = [];
+        const upcoming = [];
+        allBookings.forEach((booking) => {
+          const toDate = new Date(booking.toDate);
+          if (toDate < today) past.push(booking);
+          else upcoming.push(booking);
+        });
+        setCurrentHallBooking(upcoming);
+        setPrevHallBooking(past);
+      } else {
+        const errorData = await response.json();
+        if (response.status === 404)
+          alert("You have no previous hall bookings.");
+        else console.error("Fetch error:", errorData);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+    }
+  };
+
+  // Fetch previous bookings when switching tabs; call only the corresponding function.
   useEffect(() => {
     if (activeTab === "previous" && previousBookings.length === 0) {
       handlePreviousBooking();
+    } else if (
+      activeTab === "previousRestaurant" &&
+      prevRestaurantBookings.length === 0
+    ) {
+      handleRestaurantPreviousBooking();
+    } else if (
+      activeTab === "previousHall" &&
+      prevHallBooking.length === 0
+    ) {
+      handleHallPreviousBooking();
     }
   }, [activeTab]);
 
@@ -139,14 +221,13 @@ const UserDetails = () => {
         </div>
       </div>
 
-      {/* Booking Section */}
+      {/* Booking Sections */}
       <div className="max-w-5xl mx-auto mt-10 px-4">
+        <h2 className="text-xl font-semibold mb-4">Room Bookings</h2>
         <div className="flex justify-center gap-6 mb-4">
           <button
             className={`px-4 py-2 rounded-md text-sm font-medium hover:cursor-pointer ${
-              activeTab === "current"
-                ? "bg-yellow-400 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              activeTab === "current" ? "bg-yellow-400 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
             onClick={() => setActiveTab("current")}
           >
@@ -154,9 +235,7 @@ const UserDetails = () => {
           </button>
           <button
             className={`px-4 py-2 rounded-md text-sm font-medium hover:cursor-pointer ${
-              activeTab === "previous"
-                ? "bg-yellow-400 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              activeTab === "previous" ? "bg-yellow-400 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
             onClick={() => setActiveTab("previous")}
           >
@@ -164,21 +243,129 @@ const UserDetails = () => {
           </button>
         </div>
 
-        {/* Booking Content */}
         <div className="bg-white shadow rounded-lg p-6 min-h-[150px] text-center">
+          <div className="flex justify-end">
+            <button
+              className="text-gray-500 hover:text-gray-700"
+              onClick={() => {
+                if (activeTab === "current") setCurrentBookings([]);
+                else if (activeTab === "previous") setPreviousBookings([]);
+              }}
+            >
+              ✕
+            </button>
+          </div>
           {activeTab === "current" ? (
             <BookingList
               bookings={currentBookings}
-              emptyMessage="You have no current bookings."
+              emptyMessage="You have no current room bookings."
             />
           ) : (
             <BookingList
               bookings={previousBookings}
-              emptyMessage="No previous bookings found."
+              emptyMessage="No previous room bookings found."
             />
           )}
         </div>
       </div>
+
+      {/* Restaurant Booking Section */}
+      <div className="max-w-5xl mx-auto mt-10 px-4">
+        <h2 className="text-xl font-semibold mb-4">Restaurant Bookings</h2>
+        <div className="flex justify-center gap-6 mb-4">
+          <button
+            className={`px-4 py-2 rounded-md text-sm font-medium hover:cursor-pointer ${
+              activeTab === "currentRestaurant" ? "bg-yellow-400 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+            onClick={() => setActiveTab("currentRestaurant")}
+          >
+            Current Restaurant Bookings
+          </button>
+          <button
+            className={`px-4 py-2 rounded-md text-sm font-medium hover:cursor-pointer ${
+              activeTab === "previousRestaurant" ? "bg-yellow-400 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+            onClick={() => setActiveTab("previousRestaurant")}
+          >
+            Previous Restaurant Bookings
+          </button>
+        </div>
+
+        <div className="bg-white shadow rounded-lg p-6 min-h-[150px] text-center">
+          <div className="flex justify-end">
+            <button
+              className="text-gray-500 hover:text-gray-700"
+              onClick={() => {
+                if (activeTab === "currentRestaurant")
+                  setCurrentRestaurantBookings([]);
+                else if (activeTab === "previousRestaurant")
+                  setPrevRestaurantBookings([]);
+              }}
+            >
+              ✕
+            </button>
+          </div>
+          {activeTab === "currentRestaurant" ? (
+            <BookingList
+              bookings={currentRestaurantBookings}
+              emptyMessage="You have no current restaurant bookings."
+            />
+          ) : (
+            <BookingList
+              bookings={prevRestaurantBookings}
+              emptyMessage="No previous restaurant bookings found."
+            />
+          )}
+        </div>
+      </div>
+
+      {/* Hall Booking Section */}
+      {/* <div className="max-w-5xl mx-auto mt-10 px-4">
+        <h2 className="text-xl font-semibold mb-4">Hall Bookings</h2>
+        <div className="flex justify-center gap-6 mb-4">
+          <button
+            className={`px-4 py-2 rounded-md text-sm font-medium hover:cursor-pointer ${
+              activeTab === "currentHall" ? "bg-yellow-400 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+            onClick={() => setActiveTab("currentHall")}
+          >
+            Current Hall Bookings
+          </button>
+          <button
+            className={`px-4 py-2 rounded-md text-sm font-medium hover:cursor-pointer ${
+              activeTab === "previousHall" ? "bg-yellow-400 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+            onClick={() => setActiveTab("previousHall")}
+          >
+            Previous Hall Bookings
+          </button>
+        </div>
+
+        <div className="bg-white shadow rounded-lg p-6 min-h-[150px] text-center">
+          <div className="flex justify-end">
+            <button
+              className="text-gray-500 hover:text-gray-700"
+              onClick={() => {
+                if (activeTab === "currentHall") setCurrentHallBooking([]);
+                else if (activeTab === "previousHall") setPrevHallBooking([]);
+              }}
+            >
+              ✕
+            </button>
+          </div>
+          {activeTab === "currentHall" ? (
+            <BookingList
+              bookings={currentHallBooking}
+              emptyMessage="You have no current hall bookings."
+            />
+          ) : (
+            <BookingList
+              bookings={prevHallBooking}
+              emptyMessage="No previous hall bookings found."
+            />
+          )}
+        </div>
+      </div> */}
 
       <Footer />
     </div>

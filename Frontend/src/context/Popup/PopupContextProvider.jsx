@@ -3,8 +3,8 @@ import PopupContext from './PopupContext'
 
 const PopupContextProvider = ({children}) => {
     const [showLogin, setShowLogin] = React.useState(false)
-    return(
-        
+   
+    return(     
         <PopupContext.Provider value={{showLogin, setShowLogin}}>
         {children}
         </PopupContext.Provider>
