@@ -9,7 +9,7 @@ import Navbar2 from "../components/Navbar2.jsx";
 import { asyncHandler } from "../../../Backend/src/utils/asyncHandler.js";
 
 const RoomBooking = () => {
-  const [step, setStep] = useState(1); // Booking steps
+  const [step, setStep] = useState(1); // Booking step
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [arrivalDate, setArrivalDate] = useState("");
   const [departureDate, setDepartureDate] = useState("");
@@ -22,44 +22,43 @@ const RoomBooking = () => {
   const { user, setUser } = useContext(UserContext);
   const [showRoomAvailability, setShowRoomAvailability] = useState(false);
   const [roomnumber, setRoomNumber] = useState(null);
-  
-  const [type1, setType1] = useState(null)
-  const [type2, setType2] = useState(null)
-  const [type3, setType3] = useState(null)
-  const [type4, setType4] = useState(null)
-  
+  const [type1, setType1] = useState(null);
+  const [type2, setType2] = useState(null);
+  const [type3, setType3] = useState(null);
+  const [type4, setType4] = useState(null);
+  const [detailsConfirmed, setDetailsConfirmed] = useState(false);
+
   const [verifyUser, setVerifyUser] = useState({
     email: "",
     password: "",
     phoneno: "",
   });
 
-  // Update the handleverifyuser function
   const handleverifyuser = (e) => {
     const { name, value } = e.target;
     setVerifyUser((prev) => ({ ...prev, [name]: value }));
   };
 
-  const dataincurrentRoom = async (index) => {
-    if (index === 1) {
+  const dataincurrentRoom = (index) => {
+    if (index === 0) {
       setBookingDetails((prev) => ({
         ...prev,
-        roomId: type1?.[0]?._id
+        roomId: type1?.[0]?._id,
+      }));
+    } else if (index === 1) {
+      setBookingDetails((prev) => ({
+        ...prev,
+        roomId: type2?.[0]?._id,
       }));
     } else if (index === 2) {
       setBookingDetails((prev) => ({
         ...prev,
-        roomId: type2?.[0]?._id
+        roomId: type3?.[0]?._id,
       }));
     } else if (index === 3) {
       setBookingDetails((prev) => ({
         ...prev,
-        roomId: type3?.[0]?._id
-      }));
-    } else if (index === 4) {
-      setBookingDetails((prev) => ({
-        ...prev,
-        roomId: type4?.[0]?._id
+        roomId: type4?.[0]?._id,
       }));
     }
   };
@@ -69,7 +68,7 @@ const RoomBooking = () => {
     roomId: "",
     fromDate: "",
     toDate: "",
-    guest: "",
+    guests: "",
     totalPrice: "",
   });
 
@@ -79,53 +78,54 @@ const RoomBooking = () => {
       ...bookingDetails,
       fromDate: arrivalDate,
       toDate: departureDate,
-      guest: numAdults,
+      guests: numAdults,
     });
   };
 
   const particularRoom = [
-    { "id": 101, "roomId": "67f795f354d898464a58ec23" },
-    { "id": 102, "roomId": "67f7968654d898464a58ec24" },
-    { "id": 103, "roomId": "67f796f154d898464a58ec25" },
-    { "id": 104, "roomId": "67f7970854d898464a58ec26" },
-    { "id": 105, "roomId": "67f7978554d898464a58ec27" },
-    { "id": 106, "roomId": "67f797aa54d898464a58ec28" },
-    { "id": 107, "roomId": "67f797d754d898464a58ec29" },
-    { "id": 108, "roomId": "67f797e754d898464a58ec2a" },
-    { "id": 109, "roomId": "67f7980a54d898464a58ec2b" },
-    { "id": 110, "roomId": "67f7981a54d898464a58ec2c" },
-    { "id": 111, "roomId": "67f7a94fdb0ae61806523f84" },
-]
-
+    { id: 101, roomId: "67f795f354d898464a58ec23" },
+    { id: 102, roomId: "67f7968654d898464a58ec24" },
+    { id: 103, roomId: "67f796f154d898464a58ec25" },
+    { id: 104, roomId: "67f7970854d898464a58ec26" },
+    { id: 105, roomId: "67f7978554d898464a58ec27" },
+    { id: 106, roomId: "67f797aa54d898464a58ec28" },
+    { id: 107, roomId: "67f797d754d898464a58ec29" },
+    { id: 108, roomId: "67f797e754d898464a58ec2a" },
+    { id: 109, roomId: "67f7980a54d898464a58ec2b" },
+    { id: 110, roomId: "67f7981a54d898464a58ec2c" },
+    { id: 111, roomId: "67f7a94fdb0ae61806523f84" },
+  ];
 
   const showAvailability = async () => {
     try {
-      // Step 2: POST requests for specific room availability
       const type1Ids = [101, 102, 103];
       const type2Ids = [104];
       const type3Ids = [105, 106, 107, 108, 109];
       const type4Ids = [110];
-  
+
       const tempType1 = [];
       const tempType2 = [];
       const tempType3 = [];
       const tempType4 = [];
-  
+
       for (let room of particularRoom) {
-        const response = await fetch('http://localhost:8000/api/v1/rooms/availableparticularroom', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            roomId: room.roomId,
-            fromDate: arrivalDate,
-            toDate: departureDate
-          })
-        });
-  
+        const response = await fetch(
+          "http://localhost:8000/api/v1/rooms/availableparticularroom",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              roomId: room.roomId,
+              fromDate: arrivalDate,
+              toDate: departureDate,
+            }),
+          }
+        );
+
         if (response.ok) {
           const data = await response.json();
           const roomData = data.data.room;
-  
+
           if (type1Ids.includes(room.id)) {
             tempType1.push(roomData);
           } else if (type2Ids.includes(room.id)) {
@@ -142,7 +142,7 @@ const RoomBooking = () => {
           console.log(`Error for room ${room.id}:`, errorData);
         }
       }
-  
+
       setType1(tempType1);
       setType2(tempType2);
       setType3(tempType3);
@@ -150,7 +150,7 @@ const RoomBooking = () => {
     } catch (error) {
       console.log("Fetch failed (POST requests):", error);
     }
-  }
+  };
 
   const navigate = useNavigate();
 
@@ -170,7 +170,7 @@ const RoomBooking = () => {
       ],
       image: assets.roomimage1,
       available: true,
-      count: type1==null?0:type1.length,
+      count: type1 == null ? 0 : type1.length,
     },
     {
       name: "Double Room with Balcony",
@@ -187,7 +187,7 @@ const RoomBooking = () => {
       ],
       image: assets.roomimage2,
       available: true,
-      count: type2==null?0:type2.length,
+      count: type2 == null ? 0 : type2.length,
     },
     {
       name: "Standard Double Room",
@@ -203,7 +203,7 @@ const RoomBooking = () => {
       ],
       image: assets.roomimage3,
       available: true,
-      count: type3==null?0:type3.length,
+      count: type3 == null ? 0 : type3.length,
     },
     {
       name: "Standard Triple Room",
@@ -219,7 +219,7 @@ const RoomBooking = () => {
       ],
       image: assets.roomimage4,
       available: true,
-      count: type4==null?0:type4.length,
+      count: type4 == null ? 0 : type4.length,
     },
   ];
 
@@ -270,63 +270,68 @@ const RoomBooking = () => {
       setShowLogin(true);
       return;
     }
-    setBookingDetails({
-      ...bookingDetails,
+    setBookingDetails((prev) => ({
+      ...prev,
       userId: user.user._id,
-      totalPrice: totalCost
-    });
-    
-  }
+      totalPrice: totalCost,
+    }));
+    setDetailsConfirmed(true);
+  };
 
-  const handlePayment = async () => {  
-    const verifiedUser = await verification();
-    console.log(JSON.stringify(myObject, null, 2));
-      console.log(bookingDetails)
-      await insertinroombooking();
-      // navigate("/UserDetails");
-    }
-  
+  const handlePayment = async () => {
+    await verification();
+    await insertinroombooking();
+    navigate('/UserDetails');
+  };
 
   const insertinroombooking = async (req, res) => {
-    console.log(bookingDetails)
+    console.log(`bookingDetails : ${JSON.stringify(bookingDetails, null, 2)}`);
     try {
-      const response = await fetch('http://localhost:8000/api/v1/rooms/newBooking', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ bookingDetails })
-      });
+      const response = await fetch(
+        "http://localhost:8000/api/v1/rooms/newBooking",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(bookingDetails),
+        }
+      );
 
       if (response.ok) {
-      const data = await response.json();
-      console.log("Booking successful:");
-      alert("Booking confirmed successfully!");
+        const data = await response.json();
+        console.log("Booking successful:");
+        alert("Booking confirmed successfully!");
       } else if (response.status === 400) {
-      const errorData = await response.json();
-      console.error("Booking failed:", errorData);
-      alert("Booking failed. Please check your details and try again.");
+        const errorData = await response.json();
+        console.error("Booking failed:", errorData);
+        alert("Booking failed. Please check your details and try again.");
       } else {
-      const errorData = await response.json();
-      console.error("Unexpected error:", errorData);
-      alert("An unexpected error occurred. Please try again later.");
+        const errorData = await response.json();
+        console.error("Unexpected error:", errorData);
+        alert("An unexpected error occurred. Please try again later.");
       }
     } catch (error) {
       console.error("Fetch failed:", error);
-      alert("Unable to process your booking at the moment. Please try again later.");
+      alert(
+        "Unable to process your booking at the moment. Please try again later."
+      );
     }
-  }
+  };
 
   const verification = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/v1/rooms/verifyuser", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(verifyUser),
-      });
-  
+      const response = await fetch(
+        "http://localhost:8000/api/v1/rooms/verifyuser",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(verifyUser),
+        }
+      );
+
       if (response.ok) {
         const data = await response.json();
-        setUser(data.data); // Set the user first
-        return data.data; // Return user data to be used immediately
+        setUser(data.data);
+        return data.data;
       } else if (response.status === 404) {
         alert("Invalid User Credentials");
         return null;
@@ -340,7 +345,6 @@ const RoomBooking = () => {
       return null;
     }
   };
-  
 
   const todayStr = new Date().toISOString().split("T")[0];
 
@@ -348,10 +352,8 @@ const RoomBooking = () => {
     <>
       {showLogin && <LoginPopup setShowLogin={setShowLogin} />}
 
-      {/* Navbar */}
       <Navbar2 />
 
-      {/* Step 1: Booking Form */}
       {step === 1 && (
         <>
           <section className="min-h-screen flex items-center justify-center p-6 bg-gray-50">
@@ -361,7 +363,6 @@ const RoomBooking = () => {
               </h2>
 
               <div className="grid md:grid-cols-2 gap-4">
-                {/* Dates */}
                 <div>
                   <label className="text-sm text-gray-600">Arrival</label>
                   <input
@@ -383,7 +384,6 @@ const RoomBooking = () => {
                   />
                 </div>
 
-                {/* Occupancy */}
                 <div>
                   <label className="text-sm text-gray-600">
                     Number of Rooms
@@ -416,7 +416,6 @@ const RoomBooking = () => {
                   </select>
                 </div>
 
-                {/* Promo Code */}
                 <div className="md:col-span-2">
                   <label className="text-sm text-gray-600">Promo Code</label>
                   <input
@@ -428,7 +427,6 @@ const RoomBooking = () => {
                   />
                 </div>
 
-                {/* Booking Summary */}
                 <div className="md:col-span-2 text-right">
                   <p className="font-bold text-gray-700 text-lg">
                     Your booking summary:
@@ -526,11 +524,9 @@ const RoomBooking = () => {
         </>
       )}
 
-      {/* Step 3: Booking Summary */}
       {step === 2 && selectedRoom && (
         <section className="mt-24 p-6 max-w-4xl mx-auto space-y-8 bg-white rounded-2xl shadow-xl border border-gray-200">
           <h2 className="text-3xl font-bold text-gray-800">Booking Summary</h2>
-          {/* Room & Stay Details */}
           <div className="grid md:grid-cols-2 gap-6 text-sm text-gray-700 bg-gray-50 p-6 rounded-lg border border-gray-100 shadow-sm">
             <div className="flex justify-between">
               <span className="font-medium">Room:</span>
@@ -557,7 +553,6 @@ const RoomBooking = () => {
               <span className="font-semibold text-green-700">₹{roomPrice}</span>
             </div>
           </div>
-          {/* Luggage Storage */}
           <div className="bg-yellow-50 p-5 rounded-xl border border-yellow-300">
             <h3 className="text-lg font-semibold text-yellow-800 mb-2">
               Luggage Storage Service
@@ -588,7 +583,6 @@ const RoomBooking = () => {
               </span>
             </div>
           </div>
-          {/* Booking Fee */}
           <div className="flex justify-between items-center text-sm text-gray-700">
             Including all the Booking Charge:
             <div className="flex justify-between">
@@ -596,11 +590,9 @@ const RoomBooking = () => {
               <span className="font-semibold text-yellow-700">₹{tax}</span>
             </div>
           </div>
-          {/* Total Price */}
           <div className="text-right text-2xl font-bold text-black mt-4">
             Total Cost: ₹{totalCost}
           </div>
-          {/* User Info */}
           Enter your Required Details
           <div className="grid md:grid-cols-2 gap-4">
             <input
@@ -625,20 +617,23 @@ const RoomBooking = () => {
               className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
             />
             <button
-            className="bg-green-600 text-white rounded-xl font-semibold text-lg hover:bg-green-700 transition cursor-pointer disabled:opacity-50"
-            disabled={
-              !verifyUser.email || !verifyUser.password || !verifyUser.phoneno
-            }
-            onClick={handleConfirmation}
-            >Confirm Details</button>
+              className="bg-green-600 text-white rounded-xl font-semibold text-lg hover:bg-green-700 transition cursor-pointer disabled:opacity-50"
+              disabled={detailsConfirmed}
+              onClick={handleConfirmation}
+            >
+              {detailsConfirmed ? "Confirmed" : "Confirm Details"}
+            </button>
           </div>
           <span className="text-red-500">
-            *Make sure login/signup before making payment
+            *Make sure to login/signup before making payment
           </span>
           <button
             onClick={handlePayment}
             disabled={
-              !verifyUser.email || !verifyUser.password || !verifyUser.phoneno
+              !detailsConfirmed ||
+              !verifyUser.email ||
+              !verifyUser.password ||
+              !verifyUser.phoneno
             }
             className="mt-6 w-full bg-green-600 text-white py-3 px-6 rounded-xl font-semibold text-lg hover:bg-green-700 transition cursor-pointer disabled:opacity-50"
           >

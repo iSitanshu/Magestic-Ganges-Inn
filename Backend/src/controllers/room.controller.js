@@ -100,6 +100,12 @@ const verifyUser = asyncHandler(async (req, res) => {
 
 const getinRoomBooking = asyncHandler(async (req, res) => {
     const { userId, roomId, fromDate, toDate, guests, totalPrice} = req.body;
+    console.log(userId)
+    console.log(roomId)
+    console.log(fromDate)
+    console.log(toDate)
+    console.log(guests)
+    console.log(totalPrice)
 
     // Validate required fields
     if (!userId || !roomId || !fromDate || !toDate || !guests || !totalPrice) {
