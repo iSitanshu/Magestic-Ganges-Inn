@@ -54,12 +54,18 @@ const RestaurantBooking = () => {
           />
         </div>
 
-        <div className="flex justify-center my-6">
+        <div className="flex justify-around my-6">
           <NavLink
             to="/TableBooking"
             className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 px-6 rounded-full shadow-md transition"
           >
             Book Reservation
+          </NavLink>
+          <NavLink
+            to="/HallBooking"
+            className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 px-6 rounded-full shadow-md transition"
+          >
+            Hall Reservation
           </NavLink>
         </div>
       </div>

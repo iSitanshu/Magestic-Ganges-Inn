@@ -21,7 +21,7 @@ const restaurantBookingSchema = new Schema(
     },
     timeSlot: {
       type: String,
-      enum: ['Morning', 'Evening', 'Night'],
+      enum: ['Morning', 'Lunch', 'Evening', 'Night'],
       required: true
     },
     status: {

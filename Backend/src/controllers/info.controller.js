@@ -1,3 +1,4 @@
+import { HallBooking } from "../models/hallbooking.model.js";
 import { RestaurantBooking } from "../models/restaurantbooking.model.js";
 import { RoomBooking } from "../models/roombooking.model.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -57,4 +58,40 @@ const PreviousRestaurantBookings = asyncHandler( async (req, res) => {
     );
 })
 
-export { previousDetails, RestaurantBookings, PreviousRestaurantBookings };
+const HallBookings = asyncHandler( async (req, res) => {
+    const { userId, eventName, Method, bookingDate, timeSlot } = req.body
+
+    if(!userId && !eventName && !Method && !bookingDate && !timeSlot) throw new ApiError(400, "All fields are required");
+
+    const hallbooking = await HallBooking.create({
+        userId,
+        eventName,
+        Method,
+        bookingDate,
+        timeSlot,
+        status: 'booked'
+    })
+    return res.status(201).json(
+        new ApiResponse(200, 
+            hallbooking, 
+            "Hall Booking registered successfully"
+        )
+    ); 
+})
+
+const PreviousHallBookings = asyncHandler( async (req, res) => {
+    const { userId } = req.body;
+
+    if (!userId) throw new ApiError(400, "User Id required");
+
+    const previousHallBookings = await HallBooking.find({ userId });
+    if (!previousHallBookings || previousHallBookings.length === 0) {
+        throw new ApiError(404, "No previous Hall bookings found");
+    }
+
+    return res.status(200).json(
+        new ApiResponse(200, previousHallBookings, "All your previous Hall bookings")
+    );
+})
+
+export { previousDetails, RestaurantBookings, PreviousRestaurantBookings, HallBookings, PreviousHallBookings };

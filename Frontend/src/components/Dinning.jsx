@@ -14,7 +14,8 @@ const items = [
     title: "Event Hall",
     hoverText: "Organise Events",
     defaultImg: assets.hallimage1,
-    hoverImg: assets.hallbg2
+    hoverImg: assets.hallbg2,
+    route: "/RestaurantBooking"
   },
   {
     title: "Dinning",

@@ -7,31 +7,23 @@ const hallBookingSchema = new Schema(
       ref: 'User',
       required: true
     },
-    hallId: {
-      type: Schema.Types.ObjectId,
-      ref: 'Hall',
-      required: true
-    },
     eventName: {
       type: String,
       required: true
     },
-    date: {
-      type: Date,
-      required: true
-    },
-    startTime: {
-      type: String,
-      required: true
-    },
-    endTime: {
-      type: String,
-      required: true
-    },
-    bookingSource: {
+    Method: {
       type: String,
       enum: ['Online', 'Offline'],
       default: 'Online'
+    },
+    bookingDate: {
+      type: Date,
+      required: true
+    },
+    timeSlot: {
+      type: String,
+      enum: ['Morning', 'Lunch', 'Evening', 'Night'],
+      required: true
     },
     status: {
       type: String,
