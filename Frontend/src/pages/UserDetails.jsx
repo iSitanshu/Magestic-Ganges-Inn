@@ -7,6 +7,12 @@ import { Link } from "react-router-dom";
 
 // Component for rendering booking list (works for all categories)
 const BookingList = ({ bookings, emptyMessage }) => {
+  // Helper function to safely format dates
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return isNaN(date) ? dateString : date.toLocaleDateString();
+  };
+
   if (bookings.length === 0)
     return <p className="text-gray-500">{emptyMessage}</p>;
   return (
@@ -20,15 +26,13 @@ const BookingList = ({ bookings, emptyMessage }) => {
             {/* Left Info */}
             <div className="space-y-1">
               <div className="text-lg font-semibold text-gray-800">
-                Room {booking.roomNumber}
+                {booking.roomNumber ? `Room ${booking.roomNumber}` : booking.tableName || "Booking"}
               </div>
               <div className="text-sm text-gray-600">
-                <strong>From:</strong>{" "}
-                {new Date(booking.fromDate).toLocaleDateString()}
+                <strong>From:</strong> {formatDate(booking.fromDate || booking.bookingDate)}
               </div>
               <div className="text-sm text-gray-600">
-                <strong>To:</strong>{" "}
-                {new Date(booking.toDate).toLocaleDateString()}
+                <strong>To:</strong> {formatDate(booking.toDate)}
               </div>
             </div>
             {/* Right Info */}
@@ -38,7 +42,7 @@ const BookingList = ({ bookings, emptyMessage }) => {
               </div>
               <div className="text-gray-800 font-medium">
                 <strong>Total:</strong>{" "}
-                ₹{booking.totalPrice?.toLocaleString() || "N/A"}
+                ₹{booking.totalPrice ? booking.totalPrice.toLocaleString() : "N/A"}
               </div>
             </div>
           </div>
@@ -320,7 +324,7 @@ const UserDetails = () => {
       </div>
 
       {/* Hall Booking Section */}
-      {/* <div className="max-w-5xl mx-auto mt-10 px-4">
+      <div className="max-w-5xl mx-auto mt-10 px-4">
         <h2 className="text-xl font-semibold mb-4">Hall Bookings</h2>
         <div className="flex justify-center gap-6 mb-4">
           <button
@@ -365,7 +369,7 @@ const UserDetails = () => {
             />
           )}
         </div>
-      </div> */}
+      </div>
 
       <Footer />
     </div>
