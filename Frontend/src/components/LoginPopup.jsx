@@ -5,7 +5,7 @@ import PopupContext from '../context/Popup/PopupContext.js';
 
 const LoginPopup = () => {
   const { setShowLogin } = useContext(PopupContext)
-  const { setUser } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const [currState, setCurrState] = useState('Sign Up');
   const [userregister, setUserRegister] = useState({
     username: '',
@@ -35,6 +35,7 @@ const LoginPopup = () => {
       if (response.ok) {
         const data = await response.json();
         setUser(data.data); 
+        console.log(data.data)
         setShowLogin(false);
       } else if (response.status === 409) {
         alert('User already exists!');
@@ -44,6 +45,7 @@ const LoginPopup = () => {
       }
     } catch (error) {
       console.error('Fetch failed:', error);
+      alert('User do not exits!')
     }
   };
 

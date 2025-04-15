@@ -27,7 +27,7 @@ const Home = () => {
       >
         <div className="absolute inset-0 bg-opacity-60 flex flex-col">
           {/* Navbar */}
-          <Navbar />
+          <Navbar />  
 
           {/* Hero Text */}
           <div className="flex-grow flex flex-col justify-center items-center text-center text-white px-4">

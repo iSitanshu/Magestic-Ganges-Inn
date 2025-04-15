@@ -134,7 +134,7 @@ const UserDetails = () => {
   // Fetch Hall Previous Bookings (Assuming you have an endpoint for hall bookings)
   const handleHallPreviousBooking = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/info/previousrestaurantbooking`, {
+      const response = await fetch(`http://localhost:8000/api/v1/info/previoushallbooking`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: user.user._id }),

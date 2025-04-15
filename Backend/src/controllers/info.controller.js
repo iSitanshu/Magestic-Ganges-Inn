@@ -94,4 +94,67 @@ const PreviousHallBookings = asyncHandler( async (req, res) => {
     );
 })
 
-export { previousDetails, RestaurantBookings, PreviousRestaurantBookings, HallBookings, PreviousHallBookings };
+const FromToBooking = asyncHandler(async (req, res) => {
+    const { fromDate, toDate } = req.body;
+
+
+
+    if (!fromDate || !toDate) throw new ApiError(400, "Both fromDate and toDate are required");
+
+    const specificBookings = await RoomBooking.find({
+        fromDate: {
+            $gte: new Date(fromDate).setHours(0, 0, 0, 0),
+            $lte: new Date(toDate).setHours(23, 59, 59, 999)
+        }
+    });
+
+    if (!specificBookings || specificBookings.length === 0) {
+        throw new ApiError(404, "No bookings found in this date range");
+    }
+
+    return res.status(200).json(
+        new ApiResponse(200, specificBookings, "All bookings in the specified date range")
+    );
+});
+
+const FromToRestaurantBooking = asyncHandler(async (req, res) => {
+    const { specificDate } = req.body;
+
+    if (!specificDate) throw new ApiError(400, "specificDate is required");
+
+    const specificBookings = await RestaurantBooking.find({
+        bookingDate: {
+            $gte: new Date(specificDate).setHours(0, 0, 0, 0),
+            $lte: new Date(specificDate).setHours(23, 59, 59, 999)
+        }
+    });
+
+    if (!specificBookings || specificBookings.length === 0) {
+        throw new ApiError(404, "No bookings found on the specified date");
+    }
+    return res.status(200).json(
+        new ApiResponse(200, specificBookings, "All bookings on the specified date")
+    );
+});
+const FromToHallBooking = asyncHandler(async (req, res) => {
+    const { specificDate } = req.body;
+
+    if (!specificDate) throw new ApiError(400, "specificDate is required");
+
+    const specificBookings = await HallBooking.find({
+        bookingDate: {
+            $gte: new Date(specificDate).setHours(0, 0, 0, 0),
+            $lte: new Date(specificDate).setHours(23, 59, 59, 999)
+        }
+    });
+
+    if (!specificBookings || specificBookings.length === 0) {
+        throw new ApiError(404, "No bookings found on the specified date");
+    }
+    return res.status(200).json(
+        new ApiResponse(200, specificBookings, "All bookings on the specified date")
+    );
+});
+
+export { previousDetails, RestaurantBookings, PreviousRestaurantBookings, 
+    HallBookings, PreviousHallBookings, FromToBooking, FromToHallBooking, FromToRestaurantBooking };

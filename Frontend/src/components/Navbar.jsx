@@ -19,7 +19,7 @@ const Navbar = () => {
       });
       if (response.ok) {
         setUser(null);
-        localStorage.removeItem('token');
+        localStorage.removeItem(token);
       } else {
         console.error('Logout failed');
       }
@@ -34,11 +34,33 @@ const Navbar = () => {
       <nav className="flex justify-between items-center px-6 py-4 bg-white shadow-md">
         <div className="flex items-center gap-4">
           <Link to="/">
-            <img src={assets.logo} alt="Logo" className="h-15 hover: cursor-pointer" />
+            <img src={assets.logo} alt="Logo" className="h-15 cursor-pointer" />
           </Link>
         </div>
         <div className="flex items-center gap-4">
-        <a
+          {user?.user?.role && (user.user.role === 'Admin' || user.user.role === 'Manager') && (
+            <>
+              <NavLink
+                to="/RoomAdmin"
+                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition"
+              >
+                Rooms
+              </NavLink>
+              <NavLink
+                to="/RestaurantAdmin"
+                className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded transition"
+              >
+                Restaurant
+              </NavLink>
+              <NavLink
+                to="/HallAdmin"
+                className="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded transition"
+              >
+                Hall
+              </NavLink>
+            </>
+          )}
+          <a
             href="#membersection"
             className="text-gray-800 font-medium hover:text-yellow-500 transition"
             onClick={(e) => {
@@ -85,7 +107,7 @@ const Navbar = () => {
           )}
         </div>
       </nav>
-      
+
       <ul className="flex justify-center space-x-6 py-4 bg-gray-100">
         <li>
           <a
@@ -93,7 +115,7 @@ const Navbar = () => {
             className="text-gray-800 hover:text-yellow-500 transition"
             onClick={(e) => {
               e.preventDefault();
-              document.querySelector('#hoomesection').scrollIntoView({ behavior: 'smooth' });
+              document.querySelector('#homesection').scrollIntoView({ behavior: 'smooth' });
             }}
           >
             Home
@@ -112,20 +134,20 @@ const Navbar = () => {
           </a>
         </li>
         <li>
-        <a
+          <a
             href="#offersSection"
             className="text-gray-800 hover:text-yellow-500 transition"
             onClick={(e) => {
               e.preventDefault();
-              document.querySelector('#roomsection').scrollIntoView({ behavior: 'smooth' });
+              document.querySelector('#offersSection').scrollIntoView({ behavior: 'smooth' });
             }}
           >
-            Dinning
+            Dining
           </a>
         </li>
         <li>
           <a
-            href="#offersSection"
+            href="#hallsection"
             className="text-gray-800 hover:text-yellow-500 transition"
             onClick={(e) => {
               e.preventDefault();
@@ -148,7 +170,7 @@ const Navbar = () => {
           </a>
         </li>
         <li>
-        <a
+          <a
             href="#locationsection"
             className="text-gray-800 hover:text-yellow-500 transition"
             onClick={(e) => {

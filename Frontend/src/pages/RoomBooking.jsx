@@ -83,17 +83,16 @@ const RoomBooking = () => {
   };
 
   const particularRoom = [
-    { id: 101, roomId: "67f795f354d898464a58ec23" },
-    { id: 102, roomId: "67f7968654d898464a58ec24" },
-    { id: 103, roomId: "67f796f154d898464a58ec25" },
-    { id: 104, roomId: "67f7970854d898464a58ec26" },
-    { id: 105, roomId: "67f7978554d898464a58ec27" },
-    { id: 106, roomId: "67f797aa54d898464a58ec28" },
-    { id: 107, roomId: "67f797d754d898464a58ec29" },
-    { id: 108, roomId: "67f797e754d898464a58ec2a" },
-    { id: 109, roomId: "67f7980a54d898464a58ec2b" },
-    { id: 110, roomId: "67f7981a54d898464a58ec2c" },
-    { id: 111, roomId: "67f7a94fdb0ae61806523f84" },
+    { id: 101, roomId: "67fe0beb8b76049f2d68d876" },
+    { id: 102, roomId: "67fe0ca68b76049f2d68d878" },
+    { id: 103, roomId: "67fe0d0e8b76049f2d68d879" },
+    { id: 104, roomId: "67fe0d2c8b76049f2d68d87a" },
+    { id: 105, roomId: "67fe0d4c8b76049f2d68d87b" },
+    { id: 106, roomId: "67fe0d648b76049f2d68d87c" },
+    { id: 107, roomId: "67fe0d838b76049f2d68d87d" },
+    { id: 108, roomId: "67fe0db38b76049f2d68d87e" },
+    { id: 109, roomId: "67fe0de38b76049f2d68d87f" },
+    { id: 110, roomId: "67fe0df68b76049f2d68d880" },
   ];
 
   const showAvailability = async () => {
@@ -281,7 +280,6 @@ const RoomBooking = () => {
   const handlePayment = async () => {
     await verification();
     await insertinroombooking();
-    navigate('/UserDetails');
   };
 
   const insertinroombooking = async (req, res) => {
@@ -330,7 +328,6 @@ const RoomBooking = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setUser(data.data);
         return data.data;
       } else if (response.status === 404) {
         alert("Invalid User Credentials");

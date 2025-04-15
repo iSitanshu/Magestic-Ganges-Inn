@@ -11,6 +11,9 @@ import RestaurantContextProvider from "./context/Restaurant/RestaurantContextPro
 import HallBooking from "./pages/HallBooking.jsx";
 import HallReservationsummary from "./components/HallReservationsummary.jsx";
 import HallContextProvider from "./context/Hall/HallContextProvider.jsx";
+import HallAdmin from "./pages/HallAdmin.jsx";
+import RoomAdmin from "./pages/RoomAdmin.jsx";
+import RestaurantAdmin from "./pages/RestaurantAdmin.jsx";
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false);
@@ -30,10 +33,14 @@ const App = () => {
               <Route path="/UserDetails" element={<UserDetails />} />
               <Route path="/TableBooking" element={<TableBooking />} />
               <Route path="/HallBooking" element={<HallBooking />} />
+              <Route path="/HallAdmin" element={<HallAdmin />} />
+              <Route path="/RoomAdmin" element={<RoomAdmin />} />
+              <Route path="/RestaurantAdmin" element={<RestaurantAdmin />} />
               <Route
                 path="/HallReservationsummary"
                 element={<HallReservationsummary />}
               />
+
             </Routes>
           </HallContextProvider>
         </RestaurantContextProvider>

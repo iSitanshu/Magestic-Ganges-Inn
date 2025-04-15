@@ -30,7 +30,7 @@ const RestaurantBooking = () => {
     return () => clearInterval(interval);
   }, [images.length]);
 
-  return (
+   return (
     <div>
       <Navbar2 title="Dineout" showPhoto={true} bookingLink="/TableBooking" />
 
