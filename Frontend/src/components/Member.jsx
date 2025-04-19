@@ -2,8 +2,10 @@ import React, { useContext, useState } from 'react';
 import UserContext from '../context/User/UserContext';
 import PopupContext from '../context/Popup/PopupContext';
 import LoginPopup from './LoginPopup';
+import { useNavigate } from 'react-router-dom';
 
 const Member = () => {
+  const navigate = useNavigate()
   const { setUser } = useContext(UserContext)
   const { showLogin, setShowLogin } = useContext(PopupContext)
   const [formData, setFormData] = useState({
@@ -28,8 +30,11 @@ const Member = () => {
 
       if(response.ok) {
         const data = await response.json();
-        setUser(data)
+        console.log(JSON.stringify(data, null, 2));
+
+        setUser(data.data)
         alert('You are now the Member')
+        // navigate('/UserDetails')
       }else if(response.status === 409) {
         alert('Already a Member')
       }else {

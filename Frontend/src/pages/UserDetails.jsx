@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 
 // Component for rendering booking list (works for all categories)
 const BookingList = ({ bookings, emptyMessage }) => {
+  console.log(bookings)
   // Helper function to safely format dates
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -15,6 +16,7 @@ const BookingList = ({ bookings, emptyMessage }) => {
 
   if (bookings.length === 0)
     return <p className="text-gray-500">{emptyMessage}</p>;
+
   return (
     <ul className="space-y-4">
       {bookings.map((booking, index) => (
@@ -25,15 +27,32 @@ const BookingList = ({ bookings, emptyMessage }) => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             {/* Left Info */}
             <div className="space-y-1">
-              <div className="text-lg font-semibold text-gray-800">
-                {booking.roomNumber ? `Room ${booking.roomNumber}` : booking.tableName || "Booking"}
-              </div>
-              <div className="text-sm text-gray-600">
-                <strong>From:</strong> {formatDate(booking.fromDate || booking.bookingDate)}
-              </div>
-              <div className="text-sm text-gray-600">
-                <strong>To:</strong> {formatDate(booking.toDate)}
-              </div>
+              {booking.eventName ? (
+                <>
+                  <div className="text-lg font-semibold text-gray-800">
+                    {booking.eventName}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    <strong>Time Slot:</strong> {booking.timeSlot}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    <strong>Date:</strong>{" "}
+                    {formatDate(booking.bookingDate)}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="text-lg font-semibold text-gray-800">
+                    {booking.roomNumber ? `Room ${booking.roomNumber}` : booking.tableName || "Booking"}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    <strong>From:</strong> {formatDate(booking.fromDate || booking.bookingDate)}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    <strong>To:</strong> {formatDate(booking.toDate)}
+                  </div>
+                </>
+              )}
             </div>
             {/* Right Info */}
             <div className="space-y-1 text-sm text-right sm:text-left">
@@ -99,69 +118,70 @@ const UserDetails = () => {
     }
   };
 
-  // Fetch Restaurant Previous Bookings
-  const handleRestaurantPreviousBooking = async () => {
-    try {
-      const response = await fetch(`http://localhost:8000/api/v1/info/previousrestaurantbooking`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.user._id }),
+// Fetch Restaurant Previous Bookings
+const handleRestaurantPreviousBooking = async () => {
+  try {
+    const response = await fetch(`http://localhost:8000/api/v1/info/previousrestaurantbooking`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: user.user._id }),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      const allBookings = data?.data || [];
+      
+      const today = new Date();
+      const past = [];
+      const upcoming = [];
+      // Only include bookings whose toDate is in the past
+      allBookings.forEach((booking) => {
+        if (new Date(booking.bookingDate) < today) past.push(booking);
+        else upcoming.push(booking);
       });
-      if (response.ok) {
-        const data = await response.json();
-        const allBookings = data?.data || [];
-        const today = new Date();
-        const past = [];
-        const upcoming = [];
-        allBookings.forEach((booking) => {
-          const toDate = new Date(booking.toDate);
-          if (toDate < today) past.push(booking);
-          else upcoming.push(booking);
-        });
-        setCurrentRestaurantBookings(upcoming);
-        setPrevRestaurantBookings(past);
-      } else {
-        const errorData = await response.json();
-        if (response.status === 404)
-          alert("You have no previous restaurant bookings.");
-        else console.error("Fetch error:", errorData);
-      }
-    } catch (error) {
-      console.error("Network error:", error);
+      setPrevRestaurantBookings(past);
+      setCurrentRestaurantBookings(upcoming);
+    } else {
+      const errorData = await response.json();
+      if (response.status === 404)
+        alert("You have no previous restaurant bookings.");
+      else console.error("Fetch error:", errorData);
     }
-  };
+  } catch (error) {
+    console.error("Network error:", error);
+  }
+};
 
-  // Fetch Hall Previous Bookings (Assuming you have an endpoint for hall bookings)
-  const handleHallPreviousBooking = async () => {
-    try {
-      const response = await fetch(`http://localhost:8000/api/v1/info/previoushallbooking`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.user._id }),
+// Fetch Hall Previous Bookings
+const handleHallPreviousBooking = async () => {
+  try {
+    const response = await fetch(`http://localhost:8000/api/v1/info/previoushallbooking`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: user.user._id }),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      const allBookings = data?.data || [];
+      const today = new Date();
+      const past = [];
+      const upcoming = [];
+      // Only include bookings whose toDate is in the past
+      allBookings.forEach((booking) => {
+        if (new Date(booking.bookingDate) < today) past.push(booking);
+        else upcoming.push(booking);
       });
-      if (response.ok) {
-        const data = await response.json();
-        const allBookings = data?.data || [];
-        const today = new Date();
-        const past = [];
-        const upcoming = [];
-        allBookings.forEach((booking) => {
-          const toDate = new Date(booking.toDate);
-          if (toDate < today) past.push(booking);
-          else upcoming.push(booking);
-        });
-        setCurrentHallBooking(upcoming);
-        setPrevHallBooking(past);
-      } else {
-        const errorData = await response.json();
-        if (response.status === 404)
-          alert("You have no previous hall bookings.");
-        else console.error("Fetch error:", errorData);
-      }
-    } catch (error) {
-      console.error("Network error:", error);
+      setCurrentHallBooking(upcoming)
+      setPrevHallBooking(past);
+    } else {
+      const errorData = await response.json();
+      if (response.status === 404)
+        alert("You have no previous hall bookings.");
+      else console.error("Fetch error:", errorData);
     }
-  };
+  } catch (error) {
+    console.error("Network error:", error);
+  }
+};
 
   // Fetch previous bookings when switching tabs; call only the corresponding function.
   useEffect(() => {
