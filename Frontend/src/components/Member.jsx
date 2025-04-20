@@ -33,6 +33,7 @@ const Member = () => {
         console.log(JSON.stringify(data, null, 2));
 
         setUser(data.data)
+        console.log(data.data)
         alert('You are now the Member')
         // navigate('/UserDetails')
       }else if(response.status === 409) {
