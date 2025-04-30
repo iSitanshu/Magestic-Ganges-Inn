@@ -1,6 +1,12 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const BookRoom = () => {
+  const navigate = useNavigate();
+  const changetoBookingpage = (e) => {
+    e.preventDefault();
+    navigate('/RoomBooking');
+  }
   return (
     <section
       id="booking"
@@ -45,6 +51,7 @@ const BookRoom = () => {
         <div>
           <button
             type="submit"
+            onClick={changetoBookingpage}
             className="px-6 py-2 bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-semibold rounded-lg transition"
           >
             Check

@@ -14,6 +14,7 @@ import HallContextProvider from "./context/Hall/HallContextProvider.jsx";
 import HallAdmin from "./pages/HallAdmin.jsx";
 import RoomAdmin from "./pages/RoomAdmin.jsx";
 import RestaurantAdmin from "./pages/RestaurantAdmin.jsx";
+import Contact from "./pages/Contact.jsx";
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false);
@@ -40,7 +41,7 @@ const App = () => {
                 path="/HallReservationsummary"
                 element={<HallReservationsummary />}
               />
-
+              <Route path="/Contact" element={<Contact />} />
             </Routes>
           </HallContextProvider>
         </RestaurantContextProvider>

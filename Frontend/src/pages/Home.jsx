@@ -11,6 +11,8 @@ import Member from '../components/Member.jsx';
 import Review from '../components/Review.jsx';
 import Footer from '../components/Footer.jsx';
 import { useNavigate } from 'react-router-dom';
+import Instagram from '../components/Instagram.jsx';
+import Galary from '../components/Galary.jsx';
 
 const Home = () => {
   const navigate = useNavigate()
@@ -36,8 +38,8 @@ const Home = () => {
               Book your dream vacation with us. Relax, unwind, and indulge in unmatched comfort and elegance.
             </p>
             <a
-              className="bg-yellow-500 hover:bg-yellow-600 cursor-pointer text-gray-900 px-6 py-3 rounded-full font-semibold transition"
-              onClick={()=>changepage()}
+                  className="bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-gray-900 px-8 py-4 rounded-full font-bold text-lg shadow-lg transform transition-transform hover:scale-105 hover:cursor-pointer"
+                  onClick={()=>changepage()}
             >
               Book Now
             </a>
@@ -63,6 +65,8 @@ const Home = () => {
         <Location />
       </div>
 
+      <Galary />
+
       <div id="membersection">
         <Member />
       </div>
@@ -70,6 +74,7 @@ const Home = () => {
       <Review />
 
       <Footer />
+      <Instagram />
 
     </div>
   );

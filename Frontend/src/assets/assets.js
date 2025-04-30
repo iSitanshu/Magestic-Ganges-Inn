@@ -42,6 +42,7 @@ import upi from './upi.jpg'
 import menu1 from '../assets/Menu/menu1.jpg'
 import menu2 from '../assets/Menu/menu2.jpg'
 import menu3 from '../assets/Menu/menu3.jpg'
+import ig from './instagram.jpeg'
 
 export const assets = {
     logo, landingpage, ac, cctv, clear, fire, ketle, med, parking, waiter, wifi, phone, map,
@@ -51,5 +52,5 @@ export const assets = {
     menu1, menu2, menu3,
     roombg, roombg2, hallbg, hallbg2, earlybg, earlybg2, dinningbg, dinningbg2,
     restaurantoffer, foodoffer, profilebg, yellowbg,
-    buffet, credit, reservation, seat, takeout, upi
+    buffet, credit, reservation, seat, takeout, upi, ig
 }

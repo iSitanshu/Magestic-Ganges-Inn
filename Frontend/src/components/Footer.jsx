@@ -28,8 +28,8 @@ const Footer = () => {
                 <div className="flex-1">
                     <h2 className="text-xl font-semibold mb-3">Get in Touch</h2>
                     <ul className="space-y-2 text-black">
-                        <li className="hover:text-yellow-500 cursor-pointer">+1-212-456-7890</li>
-                        <li className="hover:text-yellow-500 cursor-pointer">majesticganges@gmail.com</li>
+                        <li className="hover:text-yellow-500 cursor-pointer">8318067377</li>
+                        <li className="hover:text-yellow-500 cursor-pointer">majesticganges.inn@gmail.com</li>
                     </ul>
                 </div>
             </div>
