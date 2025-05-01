@@ -15,8 +15,8 @@ import roomimage2 from "./RoomImg/Roomimage2.jpg"
 import roomimage3 from "./RoomImg/Roomimage3.jpg"
 import roomimage4 from "./RoomImg/Roomimage4.jpg"
 import roomimage5 from "./RoomImg/Roomimage5.jpg"
-import hallimage1 from './HallImg/hallimage1.jpg'
-import hallimage2 from './HallImg/hallimage2.jpg'
+import hallimage1 from './HallImg/Hallimage1.jpg'
+import hallimage2 from './HallImg/Hallimage2.jpg'
 import entryimage1 from './EntryImg/entryimage1.jpg'
 import entryimage2 from './EntryImg/entryimage2.jpg'
 import entryimage3 from './EntryImg/entryimage3.jpg'
