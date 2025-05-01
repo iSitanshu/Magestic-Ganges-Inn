@@ -10,11 +10,11 @@ import parking from './parking.jpg'
 import waiter from './waiter.jpg'
 import wifi from './wifi.jpg'
 import phone from './phone.jpg'
-import roomimage1 from "./RoomImg/roomimage1.jpg"
-import roomimage2 from "./RoomImg/roomimage2.jpg"
-import roomimage3 from "./RoomImg/roomimage3.jpg"
-import roomimage4 from "./RoomImg/roomimage4.jpg"
-import roomimage5 from "./RoomImg/roomimage5.jpg"
+import roomimage1 from "./RoomImg/Roomimage2.jpg"
+import roomimage2 from "./RoomImg/Roomimage2.jpg"
+import roomimage3 from "./RoomImg/Roomimage3.jpg"
+import roomimage4 from "./RoomImg/Roomimage4.jpg"
+import roomimage5 from "./RoomImg/Roomimage5.jpg"
 import hallimage1 from './HallImg/hallimage1.jpg'
 import hallimage2 from './HallImg/hallimage2.jpg'
 import entryimage1 from './EntryImg/entryimage1.jpg'
@@ -46,7 +46,7 @@ import ig from './instagram.jpeg'
 
 export const assets = {
     logo, landingpage, ac, cctv, clear, fire, ketle, med, parking, waiter, wifi, phone, map,
-    roomimage1, roomimage2, roomimage3, roomimage4, roomimage5,
+    roomimage1 ,roomimage2, roomimage3, roomimage4, roomimage5,
     hallimage1, hallimage2,
     entryimage1, entryimage2, entryimage3,
     menu1, menu2, menu3,
