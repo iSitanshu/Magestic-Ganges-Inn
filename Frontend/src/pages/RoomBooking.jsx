@@ -101,30 +101,48 @@ const RoomBooking = () => {
       const type2Ids = [104];
       const type3Ids = [105, 106, 107, 108, 109];
       const type4Ids = [110];
-
+  
       const tempType1 = [];
       const tempType2 = [];
       const tempType3 = [];
       const tempType4 = [];
-
-      for (let room of particularRoom) {
-        const response = await fetch(
-          "https://magestic-ganges-inn-backend.onrender.com/api/v1/rooms/availableparticularroom",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              roomId: room.roomId,
-              fromDate: arrivalDate,
-              toDate: departureDate,
-            }),
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          const roomData = data.data.room;
-
+  
+      // Create an array of fetch promises for all rooms concurrently
+      const fetchPromises = particularRoom.map((room) =>
+        fetch("https://magestic-ganges-inn-backend.onrender.com/api/v1/rooms/availableparticularroom", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            roomId: room.roomId,
+            fromDate: arrivalDate,
+            toDate: departureDate,
+          }),
+        })
+          .then(async (response) => {
+            if (response.ok) {
+              const data = await response.json();
+              return { room, roomData: data.data.room };
+            } else if (response.status === 400) {
+              console.log(`Room ID ${room.id} is unavailable`);
+              return null;
+            } else {
+              const errorData = await response.json();
+              console.log(`Error for room ${room.id}:`, errorData);
+              return null;
+            }
+          })
+          .catch((error) => {
+            console.log(`Fetch failed for room ${room.id}:`, error);
+            return null;
+          })
+      );
+  
+      // Wait for all fetches concurrently
+      const results = await Promise.all(fetchPromises);
+  
+      results.forEach((result) => {
+        if (result && result.roomData) {
+          const { room, roomData } = result;
           if (type1Ids.includes(room.id)) {
             tempType1.push(roomData);
           } else if (type2Ids.includes(room.id)) {
@@ -134,14 +152,9 @@ const RoomBooking = () => {
           } else if (type4Ids.includes(room.id)) {
             tempType4.push(roomData);
           }
-        } else if (response.status === 400) {
-          console.log(`Room ID ${room.id} is unavailable`);
-        } else {
-          const errorData = await response.json();
-          console.log(`Error for room ${room.id}:`, errorData);
         }
-      }
-
+      });
+  
       setType1(tempType1);
       setType2(tempType2);
       setType3(tempType3);
