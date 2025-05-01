@@ -89,7 +89,7 @@ const UserDetails = () => {
   // Fetch Room Previous Bookings
   const handlePreviousBooking = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/info/previousbookingdetails`, {
+      const response = await fetch(`https://magestic-ganges-inn-backend.onrender.com/api/v1/info/previousbookingdetails`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: user.user._id }),
@@ -121,7 +121,7 @@ const UserDetails = () => {
 // Fetch Restaurant Previous Bookings
 const handleRestaurantPreviousBooking = async () => {
   try {
-    const response = await fetch(`http://localhost:8000/api/v1/info/previousrestaurantbooking`, {
+    const response = await fetch(`https://magestic-ganges-inn-backend.onrender.com/api/v1/info/previousrestaurantbooking`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId: user.user._id }),
@@ -154,7 +154,7 @@ const handleRestaurantPreviousBooking = async () => {
 // Fetch Hall Previous Bookings
 const handleHallPreviousBooking = async () => {
   try {
-    const response = await fetch(`http://localhost:8000/api/v1/info/previoushallbooking`, {
+    const response = await fetch(`https://magestic-ganges-inn-backend.onrender.com/api/v1/info/previoushallbooking`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId: user.user._id }),

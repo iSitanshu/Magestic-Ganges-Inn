@@ -109,7 +109,7 @@ const RoomBooking = () => {
 
       for (let room of particularRoom) {
         const response = await fetch(
-          "http://localhost:8000/api/v1/rooms/availableparticularroom",
+          "https://magestic-ganges-inn-backend.onrender.com/api/v1/rooms/availableparticularroom",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -286,7 +286,7 @@ const RoomBooking = () => {
     console.log(`bookingDetails : ${JSON.stringify(bookingDetails, null, 2)}`);
     try {
       const response = await fetch(
-        "http://localhost:8000/api/v1/rooms/newBooking",
+        "https://magestic-ganges-inn-backend.onrender.com/api/v1/rooms/newBooking",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -318,7 +318,7 @@ const RoomBooking = () => {
   const verification = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8000/api/v1/rooms/verifyuser",
+        "https://magestic-ganges-inn-backend.onrender.com/api/v1/rooms/verifyuser",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

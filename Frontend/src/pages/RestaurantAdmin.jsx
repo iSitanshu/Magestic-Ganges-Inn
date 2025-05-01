@@ -12,7 +12,7 @@ const RestaurantAdmin = () => {
       return;
     }
     try {
-      const response = await fetch("http://localhost:8000/api/v1/info/fromtoRestaurantBooking", {
+      const response = await fetch("https://magestic-ganges-inn-backend.onrender.com/api/v1/info/fromtoRestaurantBooking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ specificDate }),

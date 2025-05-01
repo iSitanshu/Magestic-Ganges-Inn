@@ -22,7 +22,7 @@ const Member = () => {
     e.preventDefault();
     
     try{
-      const response = await fetch('http://localhost:8000/api/v1/users/ismember',{
+      const response = await fetch('https://magestic-ganges-inn-backend.onrender.com/api/v1/users/ismember',{
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

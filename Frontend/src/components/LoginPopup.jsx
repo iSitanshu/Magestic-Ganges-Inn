@@ -23,8 +23,8 @@ const LoginPopup = () => {
     try {
       const url =
         currState === 'Sign Up'
-          ? 'http://localhost:8000/api/v1/users/register'
-          : 'http://localhost:8000/api/v1/users/login';
+          ? 'https://magestic-ganges-inn-backend.onrender.com/api/v1/users/register'
+          : 'https://magestic-ganges-inn-backend.onrender.com/api/v1/users/login';
 
       const response = await fetch(url, {
         method: 'POST',
