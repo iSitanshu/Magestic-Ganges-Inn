@@ -109,7 +109,7 @@ const RoomBooking = () => {
   
       // Create an array of fetch promises for all rooms concurrently
       const fetchPromises = particularRoom.map((room) =>
-        fetch("https://magestic-ganges-inn-backend.onrender.com/api/v1/rooms/availableparticularroom", {
+        fetch("https://magestic-ganges-inn-backend-qfvz.onrender.com/api/v1/rooms/availableparticularroom", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -299,7 +299,7 @@ const RoomBooking = () => {
     console.log(`bookingDetails : ${JSON.stringify(bookingDetails, null, 2)}`);
     try {
       const response = await fetch(
-        "https://magestic-ganges-inn-backend.onrender.com/api/v1/rooms/newBooking",
+        "https://magestic-ganges-inn-backend-qfvz.onrender.com/api/v1/rooms/newBooking",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -331,7 +331,7 @@ const RoomBooking = () => {
   const verification = async () => {
     try {
       const response = await fetch(
-        "https://magestic-ganges-inn-backend.onrender.com/api/v1/rooms/verifyuser",
+        "https://magestic-ganges-inn-backend-qfvz.onrender.com/api/v1/rooms/verifyuser",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

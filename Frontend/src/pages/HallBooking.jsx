@@ -56,7 +56,7 @@ const HallBooking = () => {
 
   const handleHallApi = async () => {
     try {
-      const response = await fetch('https://magestic-ganges-inn-backend.onrender.com/api/v1/info/currenthallbooking', {
+      const response = await fetch('https://magestic-ganges-inn-backend-qfvz.onrender.com/api/v1/info/currenthallbooking', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(hall)

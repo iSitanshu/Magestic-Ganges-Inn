@@ -62,7 +62,7 @@ const TableBooking = () => {
 
   const handleRestaurantApi = async () => {
     try{
-      const response = await fetch('https://magestic-ganges-inn-backend.onrender.com/api/v1/info/currentrestaurantbooking', {
+      const response = await fetch('https://magestic-ganges-inn-backend-qfvz.onrender.com/api/v1/info/currentrestaurantbooking', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(restaurant)

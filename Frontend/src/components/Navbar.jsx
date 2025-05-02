@@ -13,7 +13,7 @@ const Navbar = () => {
   const logoutUser = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`https://magestic-ganges-inn-backend.onrender.com/api/v1/users/logout`, {
+      const response = await fetch(`https://magestic-ganges-inn-backend-qfvz.onrender.com/api/v1/users/logout`, {
         method: 'POST',
         credentials: 'include',
       });
