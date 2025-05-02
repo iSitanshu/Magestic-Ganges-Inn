@@ -65,7 +65,9 @@ const Home = () => {
         <Location />
       </div>
 
-      <Galary />
+      <div id="galary">
+        <Galary />
+      </div>
 
       <div id="membersection">
         <Member />
