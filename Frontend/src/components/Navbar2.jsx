@@ -127,16 +127,12 @@ const Navbar2 = () => {
           </button>
         </li>
         <li>
-        <a
-            href="#galary"
-            className="text-gray-800 font-medium hover:text-yellow-500 transition"
-            onClick={(e) => {
-              e.preventDefault();
-              document.querySelector('#galary')?.scrollIntoView({ behavior: 'smooth' });
-            }}
+          <button
+            onClick={() => navigateAndScroll('/', '#galary')}
+            className="text-gray-800 hover:text-yellow-500 transition"
           >
             Galary
-          </a>
+          </button>
         </li>
       </ul>
     </>
