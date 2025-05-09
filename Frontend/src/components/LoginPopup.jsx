@@ -23,7 +23,7 @@ const LoginPopup = () => {
       const url =
         currState === 'Sign Up'
           ? 'https://magestic-ganges-inn-backend.onrender.com/api/v1/users/register'
-          : 'https://magestic-ganges-inn.vercel.app/api/v1/users/login';
+          : 'https://magestic-ganges-inn-backend.onrender.com/api/v1/users/login';
 
 
       const response = await fetch(url, {
