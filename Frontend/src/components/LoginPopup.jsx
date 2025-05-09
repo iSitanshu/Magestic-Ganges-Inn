@@ -19,18 +19,19 @@ const LoginPopup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const url =
         currState === 'Sign Up'
-          ? 'https://majestic-ganges-inn.onrender.com/api/v1/users/register'
-          : 'https://majestic-ganges-inn.onrender.com/api/v1/users/login';
+          ? 'https://magestic-ganges-inn-backend.onrender.com/api/v1/users/register'
+          : 'http://localhost:8000/api/v1/users/login';
+
 
       const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userregister),
       });
+      console.log(response)
 
       if (response.ok) {
         const data = await response.json();
