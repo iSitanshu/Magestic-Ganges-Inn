@@ -28,6 +28,8 @@ const RoomBooking = () => {
   const [type4, setType4] = useState(null);
   const [detailsConfirmed, setDetailsConfirmed] = useState(false);
 
+  
+
   const [verifyUser, setVerifyUser] = useState({
     email: "",
     password: "",
@@ -118,6 +120,7 @@ const RoomBooking = () => {
             toDate: departureDate,
           }),
         })
+        
           .then(async (response) => {
             if (response.ok) {
               const data = await response.json();

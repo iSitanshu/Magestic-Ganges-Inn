@@ -36,6 +36,7 @@ const getAvailableRooms = asyncHandler( async(req, res) => {
 
 const getparticularAvailableRooms = asyncHandler(async (req, res) => {
     const { roomId, fromDate, toDate } = req.body;
+    console.log(roomId, fromDate,toDate)
 
     if (!fromDate || !roomId || !toDate) {
         throw new ApiError(400, 'Room ID, Arrival, and Departure dates are required');
