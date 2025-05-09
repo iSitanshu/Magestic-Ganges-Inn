@@ -12,7 +12,7 @@ const HallAdmin = () => {
       return;
     }
     try {
-      const response = await fetch("https://magestic-ganges-inn-backend-qfvz.onrender.com/api/v1/info/fromtohallbooking", {
+      const response = await fetch("https://majestic-ganges-inn.onrender.com/api/v1/info/fromtohallbooking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ specificDate }),

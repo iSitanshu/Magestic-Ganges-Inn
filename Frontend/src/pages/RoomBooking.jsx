@@ -83,16 +83,16 @@ const RoomBooking = () => {
   };
 
   const particularRoom = [
-    { id: 101, roomId: "68127c79f49a1cebc9c49b5e" },
-    { id: 102, roomId: "68127d49f49a1cebc9c49b5f" },
-    { id: 103, roomId: "68127d87f49a1cebc9c49b60" },
-    { id: 104, roomId: "68127db4f49a1cebc9c49b61" },
-    { id: 105, roomId: "68127de2f49a1cebc9c49b62" },
-    { id: 106, roomId: "68127e13f49a1cebc9c49b63" },
-    { id: 107, roomId: "68127e44f49a1cebc9c49b64" },
-    { id: 108, roomId: "68127e76f49a1cebc9c49b65" },
-    { id: 109, roomId: "68127ea2f49a1cebc9c49b66" },
-    { id: 110, roomId: "68127ec6f49a1cebc9c49b67" },
+    { id: 101, roomId: "67fe0beb8b76049f2d68d876" },
+    { id: 102, roomId: "67fe0ca68b76049f2d68d878" },
+    { id: 103, roomId: "67fe0d0e8b76049f2d68d879" },
+    { id: 104, roomId: "67fe0d2c8b76049f2d68d87a" },
+    { id: 105, roomId: "67fe0d4c8b76049f2d68d87b" },
+    { id: 106, roomId: "67fe0d648b76049f2d68d87c" },
+    { id: 107, roomId: "67fe0d838b76049f2d68d87d" },
+    { id: 108, roomId: "67fe0db38b76049f2d68d87e" },
+    { id: 109, roomId: "67fe0de38b76049f2d68d87f" },
+    { id: 110, roomId: "67fe0df68b76049f2d68d880" },
   ];
 
   const showAvailability = async () => {
@@ -109,7 +109,7 @@ const RoomBooking = () => {
   
       // Create an array of fetch promises for all rooms concurrently
       const fetchPromises = particularRoom.map((room) =>
-        fetch("https://magestic-ganges-inn-backend-qfvz.onrender.com/api/v1/rooms/availableparticularroom", {
+        fetch("https://majestic-ganges-inn.onrender.com/api/v1/rooms/availableparticularroom", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -299,7 +299,7 @@ const RoomBooking = () => {
     console.log(`bookingDetails : ${JSON.stringify(bookingDetails, null, 2)}`);
     try {
       const response = await fetch(
-        "https://magestic-ganges-inn-backend-qfvz.onrender.com/api/v1/rooms/newBooking",
+        "https://majestic-ganges-inn.onrender.com/api/v1/rooms/newBooking",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -331,7 +331,7 @@ const RoomBooking = () => {
   const verification = async () => {
     try {
       const response = await fetch(
-        "https://magestic-ganges-inn-backend-qfvz.onrender.com/api/v1/rooms/verifyuser",
+        "https://majestic-ganges-inn.onrender.com/api/v1/rooms/verifyuser",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
