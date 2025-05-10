@@ -120,21 +120,21 @@ const RoomBooking = () => {
             toDate: departureDate,
           }),
         })        
-          .then(async (response) => {
-            if (response.ok) {
-              const data = await response.json();
-              return { room, roomData: data.data.room };
-            } else if (response.status === 400) {
-              console.log(`Room ID ${room.id} is unavailable`);
-              return null;
-            } else {
-              const errorData = await response.json();
-              console.log(`Error for room ${room.id}:`, errorData);
-              return null;
-            }
-          })
-          .catch((error) => {
-            console.log(`Fetch failed for room ${room.id}:`, error);
+        .then(async (response) => {
+          if (response.ok) {
+            const data = await response.json();
+            return { room, roomData: data.data.room };
+          } else if (response.status === 400) {
+            console.log(`Room ID ${room.id} is unavailable`);
+            return null;
+          } else {
+            const errorData = await response.json();
+            console.log(`Error for room ${room.id}:`, errorData);
+            return null;
+          }
+        })
+        .catch((error) => {
+          console.log(`Fetch failed for room ${room.id}:`, error);
             return null;
           })
       );
