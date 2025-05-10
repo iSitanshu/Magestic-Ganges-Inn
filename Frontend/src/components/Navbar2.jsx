@@ -101,13 +101,18 @@ const Navbar2 = () => {
       {/* Bottom Nav Section */}
       <ul className="flex justify-center space-x-6 py-4 bg-gray-100">
         <li>
-          <NavLink to="/RoomBooking" className="text-gray-800 hover:text-yellow-500 transition">
-            Room
+          <NavLink to="/" className="text-gray-800 hover:text-yellow-500 transition">
+            Home
           </NavLink>
         </li>
         <li>
           <NavLink to="/RestaurantBooking" className="text-gray-800 hover:text-yellow-500 transition">
             Dinning
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/RoomBooking" className="text-gray-800 hover:text-yellow-500 transition">
+            Room
           </NavLink>
         </li>
         <li>

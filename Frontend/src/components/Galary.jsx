@@ -7,7 +7,7 @@ const Galary = () => {
   ]
 
   const diningImages = [
-    assets.dinningbg, assets.menu1, assets.menu2, assets.menu3,
+    assets.dinningbg, assets.dinnimg1, assets.dinnimg2, assets.dinnimg3
   ]
 
   const restaurantImages = [

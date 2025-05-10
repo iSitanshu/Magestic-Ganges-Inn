@@ -20,7 +20,7 @@ const amenitiesList = [
 
 const RestaurantBooking = () => {
   const [toggleAmenities, setToggleAmenities] = useState(false);
-  const images = [assets.hallbg, assets.hallimage1, assets.hallimage2];
+  const images = [assets.dinnimg1, assets.hallimage1, assets.hallimage2];
   const [currentImage, setCurrentImage] = useState(0);
 
   useEffect(() => {
@@ -217,22 +217,22 @@ const RestaurantBooking = () => {
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <img
-            src={assets.hallimage1}
+            src="https://i.pinimg.com/736x/74/7c/b4/747cb43a371e7fccb89191dd14f8aba5.jpg"
             alt="Hall 1"
             className="rounded-lg shadow-md"
           />
           <img
-            src={assets.hallimage2}
+            src="https://i.pinimg.com/736x/03/a4/e7/03a4e794ee6385e53a7979e52287d129.jpg"
             alt="Hall 2"
             className="rounded-lg shadow-md"
           />
           <img
-            src={assets.dining}
+            src="https://i.pinimg.com/736x/5f/1a/ff/5f1affe4b351a8e96bca47d70c81f8e9.jpg"
             alt="Dining"
             className="rounded-lg shadow-md"
           />
           <img
-            src={assets.dinningbg}
+            src="https://i.pinimg.com/736x/82/f4/f0/82f4f046fa2cce6cb41089769c6e3abd.jpg"
             alt="Dining BG"
             className="rounded-lg shadow-md"
           />

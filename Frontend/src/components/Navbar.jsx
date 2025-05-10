@@ -130,18 +130,6 @@ const Navbar = () => {
               document.querySelector('#roomsection').scrollIntoView({ behavior: 'smooth' });
             }}
           >
-            Room
-          </a>
-        </li>
-        <li>
-          <a
-            href="#offersSection"
-            className="text-gray-800 hover:text-yellow-500 transition"
-            onClick={(e) => {
-              e.preventDefault();
-              document.querySelector('#offersSection').scrollIntoView({ behavior: 'smooth' });
-            }}
-          >
             Dining
           </a>
         </li>
@@ -155,6 +143,18 @@ const Navbar = () => {
             }}
           >
             Hall
+          </a>
+        </li>
+        <li>
+          <a
+            href="#roomsection"
+            className="text-gray-800 hover:text-yellow-500 transition"
+            onClick={(e) => {
+              e.preventDefault();
+              document.querySelector('#roomsection').scrollIntoView({ behavior: 'smooth' });
+            }}
+          >
+            Room
           </a>
         </li>
         <li>

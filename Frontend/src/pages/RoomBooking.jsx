@@ -93,7 +93,7 @@ const RoomBooking = () => {
     { id: 106, roomId: "67fe0d648b76049f2d68d87c" },
     { id: 107, roomId: "67fe0d838b76049f2d68d87d" },
     { id: 108, roomId: "67fe0db38b76049f2d68d87e" },
-    { id: 109, roomId: "67fe0de38b76049f2d68d87f" },
+    { id: 109, roomId: "67fe0de38b76049f2d68d87f" }, 
     { id: 110, roomId: "67fe0df68b76049f2d68d880" },
   ];
 
@@ -184,7 +184,7 @@ const RoomBooking = () => {
       ],
       image: assets.roomimage1,
       available: true,
-      count: type1 == null ? 0 : type1.length,
+      count: 3
     },
     {
       name: "Double Room with Balcony",
@@ -201,7 +201,7 @@ const RoomBooking = () => {
       ],
       image: assets.roomimage2,
       available: true,
-      count: type2 == null ? 0 : type2.length,
+      count: 2
     },
     {
       name: "Standard Double Room",
@@ -217,7 +217,7 @@ const RoomBooking = () => {
       ],
       image: assets.roomimage3,
       available: true,
-      count: type3 == null ? 0 : type3.length,
+      count: 1
     },
     {
       name: "Standard Triple Room",
@@ -233,7 +233,7 @@ const RoomBooking = () => {
       ],
       image: assets.roomimage4,
       available: true,
-      count: type4 == null ? 0 : type4.length,
+      count: 4
     },
   ];
 
