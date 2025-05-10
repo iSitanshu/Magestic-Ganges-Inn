@@ -233,6 +233,7 @@ const RoomBooking = () => {
       ],
       image: assets.roomimage4,
       available: true,
+      // count: type4 == null ? 0 : type4.length,
       count: 4
     },
   ];
