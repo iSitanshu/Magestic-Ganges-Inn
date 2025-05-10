@@ -111,7 +111,7 @@ const RoomBooking = () => {
   
       // Create an array of fetch promises for all rooms concurrently
       const fetchPromises = particularRoom.map((room) =>
-        fetch("https://magestic-ganges-inn-backend.onrender.com/api/v1/rooms/availableparticularroom", {
+        fetch("https://magestic-ganges-inn.vercel.app/api/v1/rooms/availableparticularroom", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
