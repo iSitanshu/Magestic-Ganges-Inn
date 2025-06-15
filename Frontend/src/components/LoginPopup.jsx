@@ -6,8 +6,7 @@ import PopupContext from '../context/Popup/PopupContext.js';
 const LoginPopup = () => {
   const { setShowLogin } = useContext(PopupContext)
   const { user, setUser } = useContext(UserContext);
-  const [currState, setCurrState] = useState('Login');
-  const [isLoading, setIsLoading] = useState(false);
+  const [currState, setCurrState] = useState('Sign Up');
   const [userregister, setUserRegister] = useState({
     username: '',
     email: '',
@@ -20,7 +19,6 @@ const LoginPopup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
     try {
       const url =
         currState === 'Sign Up'
@@ -36,8 +34,8 @@ const LoginPopup = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setLoading(true);
         setUser(data.data); 
+        console.log(data.data)
         setShowLogin(false);
       } else if (response.status === 409) {
         alert('User already exists!');
@@ -48,14 +46,10 @@ const LoginPopup = () => {
     } catch (error) {
       console.error('Fetch failed:', error);
       alert('User do not exits!')
-    } finally {
-        setIsLoading(false); // Set loading to false when the API call is completed, regardless of success or failure
-      }
+    }
   };
 
-  if (isLoading) {
-    return <p>Loading...</p>; // Display a loading message while isLoading is true
-  }
+
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-200 bg-opacity-60 z-50">
