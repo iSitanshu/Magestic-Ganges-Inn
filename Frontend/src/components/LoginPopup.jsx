@@ -31,12 +31,11 @@ const LoginPopup = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userregister),
       });
-      console.log(response)
 
       if (response.ok) {
         const data = await response.json();
+        setLoading(true);
         setUser(data.data); 
-        console.log(data.data)
         setShowLogin(false);
       } else if (response.status === 409) {
         alert('User already exists!');
