@@ -5,6 +5,7 @@ import PopupContext from '../context/Popup/PopupContext.js';
 
 const LoginPopup = () => {
   const { setShowLogin } = useContext(PopupContext)
+  const [isLoading, setIsLoading] = useState(false);
   const { user, setUser } = useContext(UserContext);
   const [currState, setCurrState] = useState('Sign Up');
   const [userregister, setUserRegister] = useState({
@@ -19,6 +20,7 @@ const LoginPopup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const url =
         currState === 'Sign Up'
@@ -46,10 +48,14 @@ const LoginPopup = () => {
     } catch (error) {
       console.error('Fetch failed:', error);
       alert('User do not exits!')
+    } finally {
+      setIsLoading(false);
     }
   };
 
-
+  if (isLoading) {
+      return <div>Loading...</div>;
+    }
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-200 bg-opacity-60 z-50">
