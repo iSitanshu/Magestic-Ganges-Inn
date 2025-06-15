@@ -21,7 +21,7 @@ const LoginPopup = () => {
     e.preventDefault();
     try {
       const url =
-        currState === 'Sign Up'
+        currState === 'Login'
           ? 'https://magestic-ganges-inn-backend.onrender.com/api/v1/users/register'
           : 'https://magestic-ganges-inn-backend.onrender.com/api/v1/users/login';
 
